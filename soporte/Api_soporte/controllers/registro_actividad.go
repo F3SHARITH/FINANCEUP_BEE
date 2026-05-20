@@ -163,7 +163,7 @@ func (c *RegistroActividadController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteRegistroActividad(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "dato eliminado", "data": id}
 	} else {
 		c.Data["json"] = err.Error()
 	}
