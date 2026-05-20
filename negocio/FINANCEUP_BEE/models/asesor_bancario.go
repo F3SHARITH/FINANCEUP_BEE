@@ -11,7 +11,7 @@ import (
 )
 
 type AsesorBancario struct {
-	Id                int       `orm:"column(id_asesor);pk"`
+	Id                int       `orm:"column(id_asesor);pk;auto"`
 	IdBanco           *Banco    `orm:"column(id_banco);rel(fk)"`
 	Nombre            string    `orm:"column(nombre)"`
 	Apellido          string    `orm:"column(apellido)"`
@@ -20,7 +20,7 @@ type AsesorBancario struct {
 	Especialidad      string    `orm:"column(especialidad);null"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *AsesorBancario) TableName() string {

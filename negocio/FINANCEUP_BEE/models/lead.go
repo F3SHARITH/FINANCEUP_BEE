@@ -11,7 +11,7 @@ import (
 )
 
 type Lead struct {
-	Id                int                 `orm:"column(id_lead);pk"`
+	Id                int                 `orm:"column(id_lead);pk;auto"`
 	IdUsuario         int                 `orm:"column(id_usuario)"`
 	IdProducto        *ProductoCrediticio `orm:"column(id_producto);rel(fk)"`
 	IdAsesor          *AsesorBancario     `orm:"column(id_asesor);rel(fk)"`
@@ -24,7 +24,7 @@ type Lead struct {
 	Observaciones     string              `orm:"column(observaciones);null"`
 	Activo            bool                `orm:"column(activo)"`
 	FechaCreacion     time.Time           `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Lead) TableName() string {

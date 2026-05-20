@@ -11,7 +11,7 @@ import (
 )
 
 type TransaccionComision struct {
-	Id                 int                  `orm:"column(id_transaccion);pk"`
+	Id                 int                  `orm:"column(id_transaccion);pk;auto"`
 	IdCredito          *CreditoDesembolsado `orm:"column(id_credito);rel(fk)"`
 	IdBanco            *Banco               `orm:"column(id_banco);rel(fk)"`
 	MontoComision      float64              `orm:"column(monto_comision)"`
@@ -21,7 +21,7 @@ type TransaccionComision struct {
 	ReferenciaPago     string               `orm:"column(referencia_pago);null"`
 	Activo             bool                 `orm:"column(activo)"`
 	FechaCreacion      time.Time            `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion  time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion  time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *TransaccionComision) TableName() string {

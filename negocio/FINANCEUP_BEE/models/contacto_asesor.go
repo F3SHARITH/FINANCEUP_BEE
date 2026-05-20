@@ -11,7 +11,7 @@ import (
 )
 
 type ContactoAsesor struct {
-	Id                int             `orm:"column(id_contacto);pk"`
+	Id                int             `orm:"column(id_contacto);pk;auto"`
 	IdAsesor          *AsesorBancario `orm:"column(id_asesor);rel(fk)"`
 	Whatsapp          string          `orm:"column(whatsapp);null"`
 	Email             string          `orm:"column(email);null"`
@@ -21,7 +21,7 @@ type ContactoAsesor struct {
 	DiasDisponibles   string          `orm:"column(dias_disponibles);null"`
 	Activo            bool            `orm:"column(activo)"`
 	FechaCreacion     time.Time       `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time       `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time       `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *ContactoAsesor) TableName() string {
