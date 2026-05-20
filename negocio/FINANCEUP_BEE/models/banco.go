@@ -11,7 +11,7 @@ import (
 )
 
 type Banco struct {
-	Id                 int       `orm:"column(id_banco);pk"`
+	Id                 int       `orm:"column(id_banco);pk;"`
 	NombreBanco        string    `orm:"column(nombre_banco)"`
 	Ciudad             string    `orm:"column(ciudad);null"`
 	Contacto           string    `orm:"column(contacto);null"`

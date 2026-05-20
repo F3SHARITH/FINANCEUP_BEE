@@ -58,9 +58,9 @@ func (c *LeadController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetLeadById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
-		c.Data["json"] = v
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
 	}
 	c.ServeJSON()
 }
@@ -121,9 +121,9 @@ func (c *LeadController) GetAll() {
 
 	l, err := models.GetAllLead(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
-		c.Data["json"] = l
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
 	}
 	c.ServeJSON()
 }
@@ -142,12 +142,12 @@ func (c *LeadController) Put() {
 	v := models.Lead{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateLeadById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
 		} else {
-			c.Data["json"] = err.Error()
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	}
 	c.ServeJSON()
 }
@@ -163,9 +163,9 @@ func (c *LeadController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteLead(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "dato eliminado", "data": id}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Delete: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	}
 	c.ServeJSON()
 }
