@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"auth/FINANCEUP_BEE/models"
+	"FINANCEUP_BEE/models"
 	"encoding/json"
 	"errors"
 	"strconv"

@@ -1,24 +1,66 @@
 package main
 
 import (
-	_ "auth/FINANCEUP_BEE/routers"
+	_ "FINANCEUP_BEE/routers"
+	"fmt"
 
-	beego "github.com/beego/beego/v2/server/web"
-	beeLogger "github.com/beego/bee/v2/logger"
 	"github.com/beego/beego/v2/client/orm"
+	"github.com/beego/beego/v2/server/web/filter/cors"
+	beego "github.com/beego/beego/v2/server/web"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	sqlConn,err := beego.AppConfig.String("sqlconn")
+	err := godotenv.Load()
 	if err != nil {
-		beeLogger.Log.Fatal(err.Error())
+		panic("Error cargando el archivo, env")
 	}
-	orm.RegisterDataBase("default", "postgres", sqlConn)
-	if beego.BConfig.RunMode == "dev" {
-		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+
+	err = beego.LoadAppConfig("ini", "conf/app.conf")
+	if err != nil {
+		panic(err)
 	}
+
+		pgUser, _ := beego.AppConfig.String("PG_USER")
+		pgPass, _ := beego.AppConfig.String("PG_PASS")
+		pgHost, _ := beego.AppConfig.String("PG_HOST")
+		pgPort, _ := beego.AppConfig.String("PG_PORT")
+		pgName, _ := beego.AppConfig.String("PG_NAME")
+		pgSchema := beego.AppConfig.DefaultString("PG_SCHEMA", "auth")
+
+		fmt.Printf("postgresSQL connection string: postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s\n", pgUser, pgPass, pgHost, pgPort, pgName, pgSchema)
+
+	orm.RegisterDataBase(
+		"default", 
+		"postgres",
+		"postgres://"+
+			pgUser+":"+	
+			pgPass+"@"+
+			pgHost+":"+
+			pgPort+"/"+
+			pgName+
+			"?sslmode=disable&search_path="+
+			pgSchema)
+
+
+		if beego.BConfig.RunMode == "dev" {
+			beego.BConfig.WebConfig.DirectoryIndex = true
+			beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+
+		}
+		beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+			AllowOrigins: []string{"*"},
+			AllowMethods: []string{"PUT","GET", "POST","DELETE"},
+			AllowHeaders: []string{"Origin", "x-requested-with",
+				"content-type",
+				"accept",
+				"origin",
+				"authorization",
+				"x-csrftoken"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+		}))
+
 	beego.Run()
 }
-
