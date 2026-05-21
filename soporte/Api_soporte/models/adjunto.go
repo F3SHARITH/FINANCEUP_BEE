@@ -18,7 +18,7 @@ type Adjunto struct {
 	TipoMime          string    `orm:"column(tipo_mime);null"`
 	TamanoBytes       int       `orm:"column(tamano_bytes);null"`
 	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now"`
 	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 

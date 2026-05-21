@@ -16,7 +16,7 @@ type Pqr struct {
 	Descripcion       string     `orm:"column(descripcion)"`
 	IdEstado          *EstadoPqr `orm:"column(id_estado);rel(fk)"`
 	Activo            bool       `orm:"column(activo)"`
-	FechaCreacion     time.Time  `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time  `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now"`
 	FechaModificacion time.Time  `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 

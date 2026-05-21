@@ -16,7 +16,7 @@ type RegistroActividad struct {
 	TipoActividad   string    `orm:"column(tipo_actividad)"`
 	Descripcion     string    `orm:"column(descripcion);null"`
 	EntidadAfectada string    `orm:"column(entidad_afectada);null"`
-	FechaActividad  time.Time `orm:"column(fecha_actividad);type(timestamp without time zone);null;auto_now_add"`
+	FechaActividad  time.Time `orm:"column(fecha_actividad);type(timestamp without time zone);null;auto_now"`
 	FechaCreacion   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now"`
 }
 
