@@ -11,13 +11,13 @@ import (
 )
 
 type Pqr struct {
-	Id                int        `orm:"column(id_pqr);pk"`
+	Id                int        `orm:"column(id_pqr);pk;auto"`
 	IdUsuario         int        `orm:"column(id_usuario)"`
 	Descripcion       string     `orm:"column(descripcion)"`
 	IdEstado          *EstadoPqr `orm:"column(id_estado);rel(fk)"`
 	Activo            bool       `orm:"column(activo)"`
 	FechaCreacion     time.Time  `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time  `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time  `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Pqr) TableName() string {

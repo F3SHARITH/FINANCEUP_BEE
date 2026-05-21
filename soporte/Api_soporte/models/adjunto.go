@@ -11,7 +11,7 @@ import (
 )
 
 type Adjunto struct {
-	Id                int       `orm:"column(id_adjunto);pk"`
+	Id                int       `orm:"column(id_adjunto);pk;auto"`
 	IdPqr             *Pqr      `orm:"column(id_pqr);rel(fk)"`
 	NombreArchivo     string    `orm:"column(nombre_archivo)"`
 	RutaArchivo       string    `orm:"column(ruta_archivo);null"`
@@ -19,7 +19,7 @@ type Adjunto struct {
 	TamanoBytes       int       `orm:"column(tamano_bytes);null"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Adjunto) TableName() string {

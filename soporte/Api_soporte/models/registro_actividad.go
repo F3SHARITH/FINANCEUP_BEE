@@ -11,13 +11,13 @@ import (
 )
 
 type RegistroActividad struct {
-	Id              int       `orm:"column(id_registro);pk"`
+	Id              int       `orm:"column(id_registro);pk;auto"`
 	IdUsuario       int       `orm:"column(id_usuario)"`
 	TipoActividad   string    `orm:"column(tipo_actividad)"`
 	Descripcion     string    `orm:"column(descripcion);null"`
 	EntidadAfectada string    `orm:"column(entidad_afectada);null"`
 	FechaActividad  time.Time `orm:"column(fecha_actividad);type(timestamp without time zone);null;auto_now_add"`
-	FechaCreacion   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *RegistroActividad) TableName() string {
