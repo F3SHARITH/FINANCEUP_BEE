@@ -11,7 +11,7 @@ import (
 )
 
 type Usuario struct {
-	Id                int            `orm:"column(id_usuario);pk"`
+	Id                int            `orm:"column(id_usuario);pk;auto"`
 	TipoDocumento     *TipoDocumento `orm:"column(tipo_documento);rel(fk)"`
 	Nombre            string         `orm:"column(nombre)"`
 	Apellido          string         `orm:"column(apellido)"`
@@ -24,7 +24,7 @@ type Usuario struct {
 	FechaUltimaSesion time.Time      `orm:"column(fecha_ultima_sesion);type(timestamp without time zone);null"`
 	Activo            bool           `orm:"column(activo)"`
 	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Usuario) TableName() string {

@@ -11,14 +11,14 @@ import (
 )
 
 type AuditoriaLogin struct {
-	Id            int       `orm:"column(id_auditoria);pk"`
+	Id            int       `orm:"column(id_auditoria);p;auto"`
 	IdUsuario     *Usuario  `orm:"column(id_usuario);rel(fk)"`
 	TipoEvento    string    `orm:"column(tipo_evento)"`
 	IpAddress     string    `orm:"column(ip_address);null"`
 	Navegador     string    `orm:"column(navegador);null"`
 	FechaEvento   time.Time `orm:"column(fecha_evento);type(timestamp without time zone);null;auto_now_add"`
 	EstadoEvento  string    `orm:"column(estado_evento)"`
-	FechaCreacion time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *AuditoriaLogin) TableName() string {

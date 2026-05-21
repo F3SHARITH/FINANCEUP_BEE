@@ -11,7 +11,7 @@ import (
 )
 
 type Credencial struct {
-	Id                 int       `orm:"column(id_credencial);pk"`
+	Id                 int       `orm:"column(id_credencial);pk;auto"`
 	IdUsuario          *Usuario  `orm:"column(id_usuario);rel(fk)"`
 	ContrasenaHash     string    `orm:"column(contrasena_hash)"`
 	Salt               string    `orm:"column(salt)"`
@@ -23,7 +23,7 @@ type Credencial struct {
 	RequiereCambio     bool      `orm:"column(requiere_cambio);null"`
 	Activo             bool      `orm:"column(activo)"`
 	FechaCreacion      time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion  time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion  time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Credencial) TableName() string {
