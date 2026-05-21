@@ -51,17 +51,21 @@ func GetCreditoDesembolsadoById(id int) (v *CreditoDesembolsado, err error) {
 	o := orm.NewOrm()
 	v = &CreditoDesembolsado{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdLead")
+		o.LoadRelated(v, "IdProducto")
+		o.LoadRelated(v, "IdBanco")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
+
 
 // GetAllCreditoDesembolsado retrieves all CreditoDesembolsado matches certain condition. Returns empty list if
 // no records exist
 func GetAllCreditoDesembolsado(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(CreditoDesembolsado))
+	qs := o.QueryTable(new(CreditoDesembolsado)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
