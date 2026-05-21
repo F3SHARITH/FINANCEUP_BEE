@@ -42,6 +42,8 @@ func GetUsuarioRolById(id int) (v *UsuarioRol, err error) {
 	o := orm.NewOrm()
 	v = &UsuarioRol{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdUsuario")
+		o.LoadRelated(v, "IdRol")
 		return v, nil
 	}
 	return nil, err
@@ -52,7 +54,7 @@ func GetUsuarioRolById(id int) (v *UsuarioRol, err error) {
 func GetAllUsuarioRol(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(UsuarioRol))
+	qs := o.QueryTable(new(UsuarioRol)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

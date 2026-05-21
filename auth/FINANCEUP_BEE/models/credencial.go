@@ -47,7 +47,7 @@ func AddCredencial(m *Credencial) (id int64, err error) {
 func GetCredencialById(id int) (v *Credencial, err error) {
 	o := orm.NewOrm()
 	v = &Credencial{Id: id}
-	if err = o.Read(v); err == nil {
+	if err = o.Read(v); err == nil {o.LoadRelated(v, "IdUsuario")
 		return v, nil
 	}
 	return nil, err
