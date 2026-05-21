@@ -42,7 +42,6 @@ func GetPqrById(id int) (v *Pqr, err error) {
 	o := orm.NewOrm()
 	v = &Pqr{Id: id}
 	if err = o.Read(v); err == nil {
-		o.LoadRelated(v, "IdUsuario")
 		o.LoadRelated(v, "IdEstado")
 		return v, nil
 	}
