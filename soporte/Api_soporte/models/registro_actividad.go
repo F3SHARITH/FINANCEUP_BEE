@@ -42,7 +42,6 @@ func GetRegistroActividadById(id int) (v *RegistroActividad, err error) {
 	o := orm.NewOrm()
 	v = &RegistroActividad{Id: id}
 	if err = o.Read(v); err == nil {
-		o.LoadRelated(v, "IdUsuario")
 		return v, nil
 	}
 		return v, nil
