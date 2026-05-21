@@ -42,8 +42,8 @@ func main() {
 			pgName+
 			"?sslmode=disable&search_path="+
 			pgSchema)
-
-
+		
+			
 		if beego.BConfig.RunMode == "dev" {
 			beego.BConfig.WebConfig.DirectoryIndex = true
 			beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
