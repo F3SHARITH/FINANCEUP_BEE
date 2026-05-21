@@ -11,19 +11,19 @@ import (
 )
 
 type Meta struct {
-	Id                 int               `orm:"column(id_meta);pk"`
-	IdUsuario          int               `orm:"column(id_usuario)"`
-	IdEditarMeta       *EditarMeta       `orm:"column(id_editar_meta);rel(fk)"`
-	IdMovimientoDinero *MovimientoDinero `orm:"column(id_movimiento_dinero);rel(fk)"`
-	Nombre             string            `orm:"column(nombre)"`
-	Descripcion        string            `orm:"column(descripcion);null"`
-	MontoObjetivo      float64           `orm:"column(monto_objetivo)"`
-	MontoActual        float64           `orm:"column(monto_actual);null"`
-	FechaLimite        time.Time         `orm:"column(fecha_limite);type(date);null"`
-	Color              string            `orm:"column(color);null"`
-	Activo             bool              `orm:"column(activo)"`
-	FechaCreacion      time.Time         `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion  time.Time         `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	Id                 int             `orm:"column(id_meta);pk"`
+	IdUsuario          int             `orm:"column(id_usuario)"`
+	IdEditarMeta       *EditarMeta     `orm:"column(id_editar_meta);rel(fk)"`
+	IdMovimientoDinero *MovimientoMeta `orm:"column(id_movimiento_dinero);rel(fk);null"`
+	Nombre             string          `orm:"column(nombre)"`
+	Descripcion        string          `orm:"column(descripcion);null"`
+	MontoObjetivo      float64         `orm:"column(monto_objetivo)"`
+	MontoActual        float64         `orm:"column(monto_actual);null"`
+	FechaLimite        time.Time       `orm:"column(fecha_limite);type(date);null"`
+	Color              string          `orm:"column(color);null"`
+	Activo             bool            `orm:"column(activo)"`
+	FechaCreacion      time.Time       `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion  time.Time       `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Meta) TableName() string {

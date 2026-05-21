@@ -11,13 +11,13 @@ import (
 )
 
 type TipoIngresoMeta struct {
-	Id                   int               `orm:"column(id_tipo_ingreso_meta);pk"`
-	IdMovimientoDinero   *MovimientoDinero `orm:"column(id_movimiento_dinero);rel(fk)"`
-	NombreMovimientoPago string            `orm:"column(nombre_movimiento_pago)"`
-	Descripcion          string            `orm:"column(descripcion);null"`
-	Activo               bool              `orm:"column(activo)"`
-	FechaCreacion        time.Time         `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion    time.Time         `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	Id                   int             `orm:"column(id_tipo_ingreso);pk"`
+	IdMovimientoDinero   *MovimientoMeta `orm:"column(id_movimiento_dinero);rel(fk);null"`
+	NombreMovimientoPago string          `orm:"column(nombre_movimiento_pago)"`
+	Descripcion          string          `orm:"column(descripcion);null"`
+	Activo               bool            `orm:"column(activo)"`
+	FechaCreacion        time.Time       `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion    time.Time       `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *TipoIngresoMeta) TableName() string {

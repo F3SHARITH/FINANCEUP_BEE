@@ -1,22 +1,22 @@
 package controllers
 
 import (
+	"FINANCEUP_BEE/models"
 	"encoding/json"
 	"errors"
-	"finanzas/models"
 	"strconv"
 	"strings"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
 
-// MovimientoDineroController operations for MovimientoDinero
-type MovimientoDineroController struct {
+// BancoController operations for Banco
+type BancoController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *MovimientoDineroController) URLMapping() {
+func (c *BancoController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -26,15 +26,15 @@ func (c *MovimientoDineroController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create MovimientoDinero
-// @Param	body		body 	models.MovimientoDinero	true		"body for MovimientoDinero content"
-// @Success 201 {int} models.MovimientoDinero
+// @Description create Banco
+// @Param	body		body 	models.Banco	true		"body for Banco content"
+// @Success 201 {int} models.Banco
 // @Failure 403 body is empty
 // @router / [post]
-func (c *MovimientoDineroController) Post() {
-	var v models.MovimientoDinero
+func (c *BancoController) Post() {
+	var v models.Banco
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddMovimientoDinero(&v); err == nil {
+		if _, err := models.AddBanco(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -48,15 +48,15 @@ func (c *MovimientoDineroController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get MovimientoDinero by id
+// @Description get Banco by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.MovimientoDinero
+// @Success 200 {object} models.Banco
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *MovimientoDineroController) GetOne() {
+func (c *BancoController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetMovimientoDineroById(id)
+	v, err := models.GetBancoById(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -67,17 +67,17 @@ func (c *MovimientoDineroController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get MovimientoDinero
+// @Description get Banco
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.MovimientoDinero
+// @Success 200 {object} models.Banco
 // @Failure 403
 // @router / [get]
-func (c *MovimientoDineroController) GetAll() {
+func (c *BancoController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -119,7 +119,7 @@ func (c *MovimientoDineroController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllMovimientoDinero(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllBanco(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -130,18 +130,18 @@ func (c *MovimientoDineroController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the MovimientoDinero
+// @Description update the Banco
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.MovimientoDinero	true		"body for MovimientoDinero content"
-// @Success 200 {object} models.MovimientoDinero
+// @Param	body		body 	models.Banco	true		"body for Banco content"
+// @Success 200 {object} models.Banco
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *MovimientoDineroController) Put() {
+func (c *BancoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.MovimientoDinero{Id: id}
+	v := models.Banco{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateMovimientoDineroById(&v); err == nil {
+		if err := models.UpdateBancoById(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -154,15 +154,15 @@ func (c *MovimientoDineroController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the MovimientoDinero
+// @Description delete the Banco
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *MovimientoDineroController) Delete() {
+func (c *BancoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteMovimientoDinero(id); err == nil {
+	if err := models.DeleteBanco(id); err == nil {
 		c.Data["json"] = "OK"
 	} else {
 		c.Data["json"] = err.Error()

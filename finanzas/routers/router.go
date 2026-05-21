@@ -15,16 +15,9 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-
-		beego.NSNamespace("/tipo_inversion",
+		beego.NSNamespace("/categoria",
 			beego.NSInclude(
-				&controllers.TipoInversionController{},
-			),
-		),
-
-		beego.NSNamespace("/inversion",
-			beego.NSInclude(
-				&controllers.InversionController{},
+				&controllers.CategoriaController{},
 			),
 		),
 
@@ -34,9 +27,57 @@ func init() {
 			),
 		),
 
+		beego.NSNamespace("/tipo_ingreso",
+			beego.NSInclude(
+				&controllers.TipoIngresoController{},
+			),
+		),
+
+		beego.NSNamespace("/finanzas",
+			beego.NSInclude(
+				&controllers.FinanzasController{},
+			),
+		),
+
+		beego.NSNamespace("/tipo_inversion",
+			beego.NSInclude(
+				&controllers.TipoInversionController{},
+			),
+		),
+
+		beego.NSNamespace("/nivel_riesgo",
+			beego.NSInclude(
+				&controllers.NivelRiesgoController{},
+			),
+		),
+
+		beego.NSNamespace("/movimiento_inversion",
+			beego.NSInclude(
+				&controllers.MovimientoInversionController{},
+			),
+		),
+
+		beego.NSNamespace("/tipo_ingreso_inversion",
+			beego.NSInclude(
+				&controllers.TipoIngresoInversionController{},
+			),
+		),
+
+		beego.NSNamespace("/inversion",
+			beego.NSInclude(
+				&controllers.InversionController{},
+			),
+		),
+
 		beego.NSNamespace("/editar_meta",
 			beego.NSInclude(
 				&controllers.EditarMetaController{},
+			),
+		),
+
+		beego.NSNamespace("/movimiento_meta",
+			beego.NSInclude(
+				&controllers.MovimientoMetaController{},
 			),
 		),
 

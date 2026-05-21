@@ -10,49 +10,56 @@ import (
 	"github.com/beego/beego/v2/client/orm"
 )
 
-type MovimientoDinero struct {
-	Id                int       `orm:"column(id_movimiento_dinero);pk;auto"`
-	Nombre            string    `orm:"column(nombre)"`
-	Monto             float64   `orm:"column(monto)"`
-	EsIngreso         bool      `orm:"column(es_ingreso)"`
+type ProductoCrediticio struct {
+	Id                int       `orm:"column(id_producto);pk;auto"`
+	IdBanco           *Banco    `orm:"column(id_banco);rel(fk)"`
+	NombreProducto    string    `orm:"column(nombre_producto)"`
+	Descripcion       string    `orm:"column(descripcion);null"`
+	MontoMinimo       float64   `orm:"column(monto_minimo);null"`
+	MontoMaximo       float64   `orm:"column(monto_maximo);null"`
+	TasaMinima        float64   `orm:"column(tasa_minima);null"`
+	TasaMaxima        float64   `orm:"column(tasa_maxima);null"`
+	PlazoMinimo       int       `orm:"column(plazo_minimo);null"`
+	PlazoMaximo       int       `orm:"column(plazo_maximo);null"`
+	Requisitos        string    `orm:"column(requisitos);null"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
 	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
-func (t *MovimientoDinero) TableName() string {
-	return "movimiento_ingreso_egreso"
+func (t *ProductoCrediticio) TableName() string {
+	return "producto_crediticio"
 }
 
 func init() {
-	orm.RegisterModel(new(MovimientoDinero))
+	orm.RegisterModel(new(ProductoCrediticio))
 }
 
-// AddMovimientoDinero insert a new MovimientoDinero into database and returns
+// AddProductoCrediticio insert a new ProductoCrediticio into database and returns
 // last inserted Id on success.
-func AddMovimientoDinero(m *MovimientoDinero) (id int64, err error) {
+func AddProductoCrediticio(m *ProductoCrediticio) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetMovimientoDineroById retrieves MovimientoDinero by Id. Returns error if
+// GetProductoCrediticioById retrieves ProductoCrediticio by Id. Returns error if
 // Id doesn't exist
-func GetMovimientoDineroById(id int) (v *MovimientoDinero, err error) {
+func GetProductoCrediticioById(id int) (v *ProductoCrediticio, err error) {
 	o := orm.NewOrm()
-	v = &MovimientoDinero{Id: id}
+	v = &ProductoCrediticio{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllMovimientoDinero retrieves all MovimientoDinero matches certain condition. Returns empty list if
+// GetAllProductoCrediticio retrieves all ProductoCrediticio matches certain condition. Returns empty list if
 // no records exist
-func GetAllMovimientoDinero(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllProductoCrediticio(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(MovimientoDinero))
+	qs := o.QueryTable(new(ProductoCrediticio))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -102,7 +109,7 @@ func GetAllMovimientoDinero(query map[string]string, fields []string, sortby []s
 		}
 	}
 
-	var l []MovimientoDinero
+	var l []ProductoCrediticio
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -125,11 +132,11 @@ func GetAllMovimientoDinero(query map[string]string, fields []string, sortby []s
 	return nil, err
 }
 
-// UpdateMovimientoDinero updates MovimientoDinero by Id and returns error if
+// UpdateProductoCrediticio updates ProductoCrediticio by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateMovimientoDineroById(m *MovimientoDinero) (err error) {
+func UpdateProductoCrediticioById(m *ProductoCrediticio) (err error) {
 	o := orm.NewOrm()
-	v := MovimientoDinero{Id: m.Id}
+	v := ProductoCrediticio{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -140,15 +147,15 @@ func UpdateMovimientoDineroById(m *MovimientoDinero) (err error) {
 	return
 }
 
-// DeleteMovimientoDinero deletes MovimientoDinero by Id and returns error if
+// DeleteProductoCrediticio deletes ProductoCrediticio by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteMovimientoDinero(id int) (err error) {
+func DeleteProductoCrediticio(id int) (err error) {
 	o := orm.NewOrm()
-	v := MovimientoDinero{Id: id}
+	v := ProductoCrediticio{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&MovimientoDinero{Id: id}); err == nil {
+		if num, err = o.Delete(&ProductoCrediticio{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

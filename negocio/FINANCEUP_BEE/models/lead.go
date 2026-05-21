@@ -10,49 +10,59 @@ import (
 	"github.com/beego/beego/v2/client/orm"
 )
 
-type MovimientoDinero struct {
-	Id                int       `orm:"column(id_movimiento_dinero);pk;auto"`
-	Nombre            string    `orm:"column(nombre)"`
-	Monto             float64   `orm:"column(monto)"`
-	EsIngreso         bool      `orm:"column(es_ingreso)"`
-	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
+type Lead struct {
+	Id                int                 `orm:"column(id_lead);pk;auto"`
+	IdUsuario         int                 `orm:"column(id_usuario)"`
+	IdProducto        *ProductoCrediticio `orm:"column(id_producto);rel(fk)"`
+	IdAsesor          *AsesorBancario     `orm:"column(id_asesor);rel(fk)"`
+	TipoCredito       string              `orm:"column(tipo_credito);null"`
+	MontoInteres      float64             `orm:"column(monto_interes);null"`
+	PlazoInteres      int                 `orm:"column(plazo_interes);null"`
+	EstadoLead        string              `orm:"column(estado_lead)"`
+	FechaGeneracion   time.Time           `orm:"column(fecha_generacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaContacto     time.Time           `orm:"column(fecha_contacto);type(timestamp without time zone);null"`
+	Observaciones     string              `orm:"column(observaciones);null"`
+	Activo            bool                `orm:"column(activo)"`
+	FechaCreacion     time.Time           `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
-func (t *MovimientoDinero) TableName() string {
-	return "movimiento_ingreso_egreso"
+func (t *Lead) TableName() string {
+	return "lead"
 }
 
 func init() {
-	orm.RegisterModel(new(MovimientoDinero))
+	orm.RegisterModel(new(Lead))
 }
 
-// AddMovimientoDinero insert a new MovimientoDinero into database and returns
+// AddLead insert a new Lead into database and returns
 // last inserted Id on success.
-func AddMovimientoDinero(m *MovimientoDinero) (id int64, err error) {
+func AddLead(m *Lead) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetMovimientoDineroById retrieves MovimientoDinero by Id. Returns error if
+// GetLeadById retrieves Lead by Id. Returns error if
 // Id doesn't exist
-func GetMovimientoDineroById(id int) (v *MovimientoDinero, err error) {
+func GetLeadById(id int) (v *Lead, err error) {
 	o := orm.NewOrm()
-	v = &MovimientoDinero{Id: id}
+	v = &Lead{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdProducto")
+		o.LoadRelated(v, "IdAsesor")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
 
-// GetAllMovimientoDinero retrieves all MovimientoDinero matches certain condition. Returns empty list if
+
+// GetAllLead retrieves all Lead matches certain condition. Returns empty list if
 // no records exist
-func GetAllMovimientoDinero(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllLead(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(MovimientoDinero))
+	qs := o.QueryTable(new(Lead)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -102,7 +112,7 @@ func GetAllMovimientoDinero(query map[string]string, fields []string, sortby []s
 		}
 	}
 
-	var l []MovimientoDinero
+	var l []Lead
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -125,11 +135,11 @@ func GetAllMovimientoDinero(query map[string]string, fields []string, sortby []s
 	return nil, err
 }
 
-// UpdateMovimientoDinero updates MovimientoDinero by Id and returns error if
+// UpdateLead updates Lead by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateMovimientoDineroById(m *MovimientoDinero) (err error) {
+func UpdateLeadById(m *Lead) (err error) {
 	o := orm.NewOrm()
-	v := MovimientoDinero{Id: m.Id}
+	v := Lead{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -140,15 +150,15 @@ func UpdateMovimientoDineroById(m *MovimientoDinero) (err error) {
 	return
 }
 
-// DeleteMovimientoDinero deletes MovimientoDinero by Id and returns error if
+// DeleteLead deletes Lead by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteMovimientoDinero(id int) (err error) {
+func DeleteLead(id int) (err error) {
 	o := orm.NewOrm()
-	v := MovimientoDinero{Id: id}
+	v := Lead{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&MovimientoDinero{Id: id}); err == nil {
+		if num, err = o.Delete(&Lead{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

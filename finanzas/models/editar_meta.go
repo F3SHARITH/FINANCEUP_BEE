@@ -13,14 +13,14 @@ import (
 type EditarMeta struct {
 	Id                int       `orm:"column(id_editar_meta);pk"`
 	Nombre            string    `orm:"column(nombre)"`
-	MontoMinimo       float64   `orm:"column(monto_minimo);null"`
-	MontoMaximo       float64   `orm:"column(monto_maximo);null"`
-	ValorCuota        float64   `orm:"column(valor_cuota);null"`
-	FechaLimite       time.Time `orm:"column(fecha_limite);type(date);null"`
-	Proposito         string    `orm:"column(proposito);null"`
+	MontoActual       float64   `orm:"column(monto_actual);null"`
+	MontoObjetivo     float64   `orm:"column(monto_objetivo)"`
+	AhorroMensual     float64   `orm:"column(ahorro_mensual);null"`
+	FechaObjetivo     time.Time `orm:"column(fecha_objetivo);type(date);null"`
+	Descripcion       string    `orm:"column(descripcion);null"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *EditarMeta) TableName() string {
