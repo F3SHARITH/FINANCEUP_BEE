@@ -42,10 +42,12 @@ func GetRegistroActividadById(id int) (v *RegistroActividad, err error) {
 	o := orm.NewOrm()
 	v = &RegistroActividad{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdUsuario")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
+
 
 // GetAllRegistroActividad retrieves all RegistroActividad matches certain condition. Returns empty list if
 // no records exist

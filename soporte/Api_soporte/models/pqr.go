@@ -42,10 +42,13 @@ func GetPqrById(id int) (v *Pqr, err error) {
 	o := orm.NewOrm()
 	v = &Pqr{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdUsuario")
+		o.LoadRelated(v, "IdEstado")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
+	
 
 // GetAllPqr retrieves all Pqr matches certain condition. Returns empty list if
 // no records exist

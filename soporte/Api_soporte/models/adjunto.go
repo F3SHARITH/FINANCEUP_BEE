@@ -44,6 +44,7 @@ func GetAdjuntoById(id int) (v *Adjunto, err error) {
 	o := orm.NewOrm()
 	v = &Adjunto{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdPqr")
 		return v, nil
 	}
 	return nil, err
