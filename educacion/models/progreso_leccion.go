@@ -10,50 +10,51 @@ import (
 	"github.com/beego/beego/v2/client/orm"
 )
 
-type Quiz struct {
-	Id                int       `orm:"column(id_quiz);pk"`
+type ProgresoLeccion struct {
+	Id                int       `orm:"column(id_progreso_leccion);pk;auto"`
+	IdUsuario         int       `orm:"column(id_usuario)"`
 	IdLeccion         *Leccion  `orm:"column(id_leccion);rel(fk)"`
-	Titulo            string    `orm:"column(titulo)"`
-	Descripcion       string    `orm:"column(descripcion);null"`
-	PuntuacionMinima  int       `orm:"column(puntuacion_minima);null"`
+	Completado        bool      `orm:"column(completado);null"`
+	FechaInicio       time.Time `orm:"column(fecha_inicio);type(timestamp without time zone);null;auto_now_add"`
+	FechaCompletado   time.Time `orm:"column(fecha_completado);type(timestamp without time zone);null"`
 	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
-func (t *Quiz) TableName() string {
-	return "quiz"
+func (t *ProgresoLeccion) TableName() string {
+	return "progreso_leccion"
 }
 
 func init() {
-	orm.RegisterModel(new(Quiz))
+	orm.RegisterModel(new(ProgresoLeccion))
 }
 
-// AddQuiz insert a new Quiz into database and returns
+// AddProgresoLeccion insert a new ProgresoLeccion into database and returns
 // last inserted Id on success.
-func AddQuiz(m *Quiz) (id int64, err error) {
+func AddProgresoLeccion(m *ProgresoLeccion) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetQuizById retrieves Quiz by Id. Returns error if
+// GetProgresoLeccionById retrieves ProgresoLeccion by Id. Returns error if
 // Id doesn't exist
-func GetQuizById(id int) (v *Quiz, err error) {
+func GetProgresoLeccionById(id int) (v *ProgresoLeccion, err error) {
 	o := orm.NewOrm()
-	v = &Quiz{Id: id}
+	v = &ProgresoLeccion{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllQuiz retrieves all Quiz matches certain condition. Returns empty list if
+// GetAllProgresoLeccion retrieves all ProgresoLeccion matches certain condition. Returns empty list if
 // no records exist
-func GetAllQuiz(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllProgresoLeccion(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Quiz))
+	qs := o.QueryTable(new(ProgresoLeccion))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -103,7 +104,7 @@ func GetAllQuiz(query map[string]string, fields []string, sortby []string, order
 		}
 	}
 
-	var l []Quiz
+	var l []ProgresoLeccion
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -126,11 +127,11 @@ func GetAllQuiz(query map[string]string, fields []string, sortby []string, order
 	return nil, err
 }
 
-// UpdateQuiz updates Quiz by Id and returns error if
+// UpdateProgresoLeccion updates ProgresoLeccion by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateQuizById(m *Quiz) (err error) {
+func UpdateProgresoLeccionById(m *ProgresoLeccion) (err error) {
 	o := orm.NewOrm()
-	v := Quiz{Id: m.Id}
+	v := ProgresoLeccion{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -141,15 +142,15 @@ func UpdateQuizById(m *Quiz) (err error) {
 	return
 }
 
-// DeleteQuiz deletes Quiz by Id and returns error if
+// DeleteProgresoLeccion deletes ProgresoLeccion by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteQuiz(id int) (err error) {
+func DeleteProgresoLeccion(id int) (err error) {
 	o := orm.NewOrm()
-	v := Quiz{Id: id}
+	v := ProgresoLeccion{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Quiz{Id: id}); err == nil {
+		if num, err = o.Delete(&ProgresoLeccion{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

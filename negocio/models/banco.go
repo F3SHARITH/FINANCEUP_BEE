@@ -11,7 +11,7 @@ import (
 )
 
 type Banco struct {
-	Id                 int       `orm:"column(id_banco);pk"`
+	Id                 int       `orm:"column(id_banco);pk;auto"`
 	NombreBanco        string    `orm:"column(nombre_banco)"`
 	Ciudad             string    `orm:"column(ciudad);null"`
 	Contacto           string    `orm:"column(contacto);null"`
@@ -23,8 +23,8 @@ type Banco struct {
 	SitioWeb           string    `orm:"column(sitio_web);null"`
 	Estado             string    `orm:"column(estado)"`
 	Activo             bool      `orm:"column(activo)"`
-	FechaCreacion      time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion  time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion      time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion  time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *Banco) TableName() string {

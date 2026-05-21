@@ -11,14 +11,14 @@ import (
 )
 
 type Contenido struct {
-	Id                int       `orm:"column(id_contenido);pk"`
+	Id                int       `orm:"column(id_contenido);pk;auto"`
 	Titulo            string    `orm:"column(titulo)"`
 	Descripcion       string    `orm:"column(descripcion);null"`
 	DuracionMinutos   int       `orm:"column(duracion_minutos);null"`
 	UrlVideo          string    `orm:"column(url_video);null"`
 	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *Contenido) TableName() string {

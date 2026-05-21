@@ -11,15 +11,17 @@ import (
 )
 
 type Leccion struct {
-	Id                int              `orm:"column(id_leccion);pk"`
+	Id                int              `orm:"column(id_leccion);pk;auto"`
 	IdModulo          *ModuloEducativo `orm:"column(id_modulo);rel(fk)"`
+	IdContenido       *Contenido       `orm:"column(id_contenido);rel(fk);null"`
 	Titulo            string           `orm:"column(titulo)"`
 	Descripcion       string           `orm:"column(descripcion);null"`
-	ContenidoHtml     string           `orm:"column(contenido_html);null"`
-	Orden             int              `orm:"column(orden);null"`
+	DuracionMinutos   int              `orm:"column(duracion_minutos);null"`
+	UrlVideo          string           `orm:"column(url_video);null"`
+	NumeroLeccion     int              `orm:"column(numero_leccion);null"`
 	Activo            bool             `orm:"column(activo)"`
-	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *Leccion) TableName() string {

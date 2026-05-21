@@ -11,7 +11,7 @@ import (
 )
 
 type CreditoDesembolsado struct {
-	Id                int                 `orm:"column(id_credito);pk"`
+	Id                int                 `orm:"column(id_credito);pk;auto"`
 	IdLead            *Lead               `orm:"column(id_lead);rel(fk)"`
 	IdUsuario         int                 `orm:"column(id_usuario)"`
 	IdProducto        *ProductoCrediticio `orm:"column(id_producto);rel(fk)"`
@@ -25,8 +25,8 @@ type CreditoDesembolsado struct {
 	EstadoCredito     string              `orm:"column(estado_credito)"`
 	SaldoActual       float64             `orm:"column(saldo_actual);null"`
 	Activo            bool                `orm:"column(activo)"`
-	FechaCreacion     time.Time           `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time           `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *CreditoDesembolsado) TableName() string {

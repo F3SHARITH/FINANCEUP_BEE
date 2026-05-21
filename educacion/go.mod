@@ -1,10 +1,10 @@
-module FINANCEUP_BEE
+module educacion
 
 go 1.26.2
 
 require (
-	github.com/beego/bee/v2 v2.3.0
 	github.com/beego/beego/v2 v2.3.10
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.12.3
 )
 

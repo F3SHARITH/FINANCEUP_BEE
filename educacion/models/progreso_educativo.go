@@ -11,15 +11,16 @@ import (
 )
 
 type ProgresoEducativo struct {
-	Id                int              `orm:"column(id_progreso);pk"`
-	IdUsuario         int              `orm:"column(id_usuario)"`
-	IdModulo          *ModuloEducativo `orm:"column(id_modulo);rel(fk)"`
-	PorcentajeAvance  float64          `orm:"column(porcentaje_avance);null"`
-	FechaInicio       time.Time        `orm:"column(fecha_inicio);type(timestamp without time zone);null;auto_now_add"`
-	FechaCompletacion time.Time        `orm:"column(fecha_completacion);type(timestamp without time zone);null"`
-	Activo            bool             `orm:"column(activo)"`
-	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	Id                   int              `orm:"column(id_progreso);pk;auto"`
+	IdUsuario            int              `orm:"column(id_usuario)"`
+	IdModulo             *ModuloEducativo `orm:"column(id_modulo);rel(fk)"`
+	PorcentajeCompletado int              `orm:"column(porcentaje_completado);null"`
+	FechaInicio          time.Time        `orm:"column(fecha_inicio);type(timestamp without time zone);null;auto_now_add"`
+	FechaCompletado      time.Time        `orm:"column(fecha_completado);type(timestamp without time zone);null"`
+	Calificacion         int              `orm:"column(calificacion);null"`
+	Activo               bool             `orm:"column(activo)"`
+	FechaCreacion        time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion    time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *ProgresoEducativo) TableName() string {

@@ -11,7 +11,7 @@ import (
 )
 
 type ProductoCrediticio struct {
-	Id                int       `orm:"column(id_producto);pk"`
+	Id                int       `orm:"column(id_producto);pk;auto"`
 	IdBanco           *Banco    `orm:"column(id_banco);rel(fk)"`
 	NombreProducto    string    `orm:"column(nombre_producto)"`
 	Descripcion       string    `orm:"column(descripcion);null"`
@@ -23,8 +23,8 @@ type ProductoCrediticio struct {
 	PlazoMaximo       int       `orm:"column(plazo_maximo);null"`
 	Requisitos        string    `orm:"column(requisitos);null"`
 	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *ProductoCrediticio) TableName() string {

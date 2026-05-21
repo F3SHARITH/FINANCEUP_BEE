@@ -11,15 +11,15 @@ import (
 )
 
 type ModuloEducativo struct {
-	Id                int       `orm:"column(id_modulo);pk"`
+	Id                int       `orm:"column(id_modulo);pk;auto"`
 	Titulo            string    `orm:"column(titulo)"`
 	Descripcion       string    `orm:"column(descripcion);null"`
 	Contenido         string    `orm:"column(contenido);null"`
 	Nivel             string    `orm:"column(nivel)"`
 	UrlThumbnail      string    `orm:"column(url_thumbnail);null"`
 	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);null;auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);null;auto_now"`
 }
 
 func (t *ModuloEducativo) TableName() string {
