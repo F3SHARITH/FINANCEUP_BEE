@@ -11,18 +11,19 @@ import (
 )
 
 type Inversion struct {
-	Id                     int            `orm:"column(id_inversion);pk"`
-	IdUsuario              int            `orm:"column(id_usuario)"`
-	IdTipoInversion        *TipoInversion `orm:"column(id_tipo_inversion);rel(fk)"`
-	MontoInvertido         float64        `orm:"column(monto_invertido)"`
-	MontoActual            float64        `orm:"column(monto_actual);null"`
-	PorcentajeRentabilidad float64        `orm:"column(porcentaje_rentabilidad);null"`
-	FechaInicio            time.Time      `orm:"column(fecha_inicio);type(date);null"`
-	FechaVencimiento       time.Time      `orm:"column(fecha_vencimiento);type(date);null"`
-	Estado                 string         `orm:"column(estado)"`
-	Activo                 bool           `orm:"column(activo)"`
-	FechaCreacion          time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion      time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	Id                 int                  `orm:"column(id_inversion);pk"`
+	IdUsuario          int                  `orm:"column(id_usuario)"`
+	IdTipoInversion    *TipoInversion       `orm:"column(id_tipo_inversion);rel(fk)"`
+	IdNivelRiesgo      *NivelRiesgo         `orm:"column(id_nivel_riesgo);rel(fk)"`
+	IdMovimientoDinero *MovimientoInversion `orm:"column(id_movimiento_dinero);rel(fk);null"`
+	Nombre             string               `orm:"column(nombre);null"`
+	Monto              float64              `orm:"column(monto);null"`
+	Rentabilidad       float64              `orm:"column(rentabilidad);null"`
+	FechaInicio        time.Time            `orm:"column(fecha_inicio);type(date);null"`
+	FechaFin           time.Time            `orm:"column(fecha_fin);type(date);null"`
+	Activo             bool                 `orm:"column(activo)"`
+	FechaCreacion      time.Time            `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion  time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Inversion) TableName() string {

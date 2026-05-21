@@ -11,17 +11,17 @@ import (
 )
 
 type MovimientoDinero struct {
-	Id                int       `orm:"column(id_movimiento_dinero);pk"`
+	Id                int       `orm:"column(id_movimiento_dinero);pk;auto"`
 	Nombre            string    `orm:"column(nombre)"`
 	Monto             float64   `orm:"column(monto)"`
 	EsIngreso         bool      `orm:"column(es_ingreso)"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *MovimientoDinero) TableName() string {
-	return "movimiento_dinero"
+	return "movimiento_ingreso_egreso"
 }
 
 func init() {
