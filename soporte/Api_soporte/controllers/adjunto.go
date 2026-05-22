@@ -1,22 +1,23 @@
 package controllers
 
 import (
-	"FINANCEUP_BEE/models"
+	"Api_soporte/models"
 	"encoding/json"
 	"errors"
 	"strconv"
 	"strings"
 
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
-// BancoController operations for Banco
-type BancoController struct {
+// AdjuntoController operations for Adjunto
+type AdjuntoController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *BancoController) URLMapping() {
+func (c *AdjuntoController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -26,15 +27,15 @@ func (c *BancoController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create Banco
-// @Param	body		body 	models.Banco	true		"body for Banco content"
-// @Success 201 {int} models.Banco
+// @Description create Adjunto
+// @Param	body		body 	models.Adjunto	true		"body for Adjunto content"
+// @Success 201 {int} models.Adjunto
 // @Failure 403 body is empty
 // @router / [post]
-func (c *BancoController) Post() {
-	var v models.Banco
+func (c *AdjuntoController) Post() {
+	var v models.Adjunto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddBanco(&v); err == nil {
+		if _, err := models.AddAdjunto(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -48,36 +49,36 @@ func (c *BancoController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Banco by id
+// @Description get Adjunto by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Banco
+// @Success 200 {object} models.Adjunto
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *BancoController) GetOne() {
+func (c *AdjuntoController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetBancoById(id)
+	v, err := models.GetAdjuntoById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
-		c.Data["json"] = v
+		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": v}
 	}
 	c.ServeJSON()
 }
 
 // GetAll ...
 // @Title Get All
-// @Description get Banco
+// @Description get Adjunto
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Banco
+// @Success 200 {object} models.Adjunto
 // @Failure 403
 // @router / [get]
-func (c *BancoController) GetAll() {
+func (c *AdjuntoController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -119,9 +120,9 @@ func (c *BancoController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllBanco(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllAdjunto(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err) 
 	} else {
 		if l==nil{
 			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
@@ -134,18 +135,18 @@ func (c *BancoController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Banco
+// @Description update the Adjunto
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Banco	true		"body for Banco content"
-// @Success 200 {object} models.Banco
+// @Param	body		body 	models.Adjunto	true		"body for Adjunto content"
+// @Success 200 {object} models.Adjunto
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *BancoController) Put() {
+func (c *AdjuntoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Banco{Id: id}
+	v := models.Adjunto{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateBancoById(&v); err == nil {
+		if err := models.UpdateAdjuntoById(&v); err == nil {
 			c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": v}
 		} else {
 			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
@@ -158,15 +159,15 @@ func (c *BancoController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Banco
+// @Description delete the Adjunto
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *BancoController) Delete() {
+func (c *AdjuntoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteBanco(id); err == nil {
+	if err := models.DeleteAdjunto(id); err == nil {
 		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "dato eliminado", "data": id}
 	} else {
 		c.Data["json"] = err.Error()
