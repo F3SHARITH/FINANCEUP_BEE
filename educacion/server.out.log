@@ -1,0 +1,7 @@
+PostgreSQL connection string: postgres://postgres:postgres@localhost:5432/bee_financeup?sslmode=disable&search_path=educacion
+2026/05/22 13:23:48.038 [1;34m[I][0m [server.go:280]  http server Running on http://:8082
+2026/05/22 13:24:35.460 [1;44m[D][0m [router.go:1305]  |      127.0.0.1|[47m 304 [0m|      545.2µs|   match|[44m GET     [0m /swagger/
+2026/05/22 13:24:42.194 [1;44m[D][0m [router.go:1305]  |      127.0.0.1|[43m 400 [0m|     4.0518ms|   match|[41m DELETE  [0m /v1/modulo_educativo/2   r:/v1/modulo_educativo/:id
+2026/05/22 13:24:49.415 [1;44m[D][0m [router.go:1305]  |      127.0.0.1|[43m 400 [0m|      508.2µs|   match|[41m DELETE  [0m /v1/modulo_educativo/2   r:/v1/modulo_educativo/:id
+2026/05/22 13:25:48.480 [1;44m[D][0m [router.go:1305]  |      127.0.0.1|[47m 304 [0m|           0s|   match|[44m GET     [0m /swagger/
+2026/05/22 13:25:53.634 [1;44m[D][0m [router.go:1305]  |      127.0.0.1|[43m 400 [0m|     1.0471ms|   match|[41m DELETE  [0m /v1/modulo_educativo/2   r:/v1/modulo_educativo/:id

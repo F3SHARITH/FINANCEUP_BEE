@@ -31,7 +31,11 @@ func (c *FinanzasController) GetAll() {
 }
 
 func (c *FinanzasController) Put() {
-	handlePut(&c.Controller, &models.Finanzas{Id: pathID(&c.Controller)}, models.UpdateFinanzasById)
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
+	}
+	handlePut(&c.Controller, &models.Finanzas{Id: id}, models.UpdateFinanzasById)
 }
 
 func (c *FinanzasController) Delete() {

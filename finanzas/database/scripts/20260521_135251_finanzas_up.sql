@@ -54,7 +54,7 @@ CREATE TRIGGER trg_fin_movimiento_mod
 -- finanzas.tipo_ingreso
 CREATE TABLE IF NOT EXISTS "finanzas"."tipo_ingreso" (
     "id_tipo_ingreso"         SERIAL PRIMARY KEY,
-    "id_movimiento_dinero"    INT REFERENCES "finanzas"."movimiento_ingreso_egreso"("id_movimiento_dinero") ON DELETE RESTRICT,
+    "id_movimiento_dinero"    INT REFERENCES "finanzas"."movimiento_ingreso_egreso"("id_movimiento_dinero") ON DELETE CASCADE,
     "nombre_movimiento_pago"  VARCHAR(120) NOT NULL,
     "descripcion"             VARCHAR(150),
     "activo"                  BOOLEAN      NOT NULL DEFAULT true,
@@ -69,10 +69,9 @@ CREATE TRIGGER trg_fin_tipo_ingreso_mod
 -- finanzas.finanzas
 CREATE TABLE IF NOT EXISTS "finanzas"."finanzas" (
     "id_finanzas"           SERIAL PRIMARY KEY,
-    "id_usuario"            INT           NOT NULL
-                                REFERENCES "auth"."usuario"("id_usuario") ON DELETE RESTRICT,
-    "id_movimiento_dinero"  INT           REFERENCES "finanzas"."movimiento_ingreso_egreso"("id_movimiento_dinero") ON DELETE RESTRICT,
-    "id_categoria"          INT           REFERENCES "finanzas"."categoria"("id_categoria") ON DELETE RESTRICT,
+    "id_usuario"            INT           NOT NULL,
+    "id_movimiento_dinero"  INT           REFERENCES "finanzas"."movimiento_ingreso_egreso"("id_movimiento_dinero") ON DELETE CASCADE,
+    "id_categoria"          INT           REFERENCES "finanzas"."categoria"("id_categoria") ON DELETE CASCADE,
     "monto_presupuesto"     DECIMAL(12,2),
     "gasto"                 DECIMAL(12,2),
     "disponible"            DECIMAL(12,2),
@@ -131,7 +130,7 @@ CREATE TRIGGER trg_inv_movimiento_mod
 -- finanzas.tipo_ingreso_inversion
 CREATE TABLE IF NOT EXISTS "finanzas"."tipo_ingreso_inversion" (
     "id_tipo_ingreso"         SERIAL PRIMARY KEY,
-    "id_movimiento_dinero"    INT REFERENCES "finanzas"."movimiento_inversion"("id_movimiento_dinero") ON DELETE RESTRICT,
+    "id_movimiento_dinero"    INT REFERENCES "finanzas"."movimiento_inversion"("id_movimiento_dinero") ON DELETE CASCADE,
     "nombre_movimiento_pago"  VARCHAR(120) NOT NULL,
     "descripcion"             VARCHAR(150),
     "activo"                  BOOLEAN      NOT NULL DEFAULT true,
@@ -146,13 +145,12 @@ CREATE TRIGGER trg_inv_tipo_ingreso_mod
 -- finanzas.inversion
 CREATE TABLE IF NOT EXISTS "finanzas"."inversion" (
     "id_inversion"          SERIAL PRIMARY KEY,
-    "id_usuario"            INT           NOT NULL
-                                REFERENCES "auth"."usuario"("id_usuario") ON DELETE RESTRICT,
+    "id_usuario"            INT           NOT NULL,
     "id_tipo_inversion"     INT           NOT NULL
-                                REFERENCES "finanzas"."tipo_inversion"("id_tipo_inversion") ON DELETE RESTRICT,
+                                REFERENCES "finanzas"."tipo_inversion"("id_tipo_inversion") ON DELETE CASCADE,
     "id_nivel_riesgo"       INT           NOT NULL
-                                REFERENCES "finanzas"."nivel_riesgo"("id_nivel_riesgo") ON DELETE RESTRICT,
-    "id_movimiento_dinero"  INT           REFERENCES "finanzas"."movimiento_inversion"("id_movimiento_dinero") ON DELETE RESTRICT,
+                                REFERENCES "finanzas"."nivel_riesgo"("id_nivel_riesgo") ON DELETE CASCADE,
+    "id_movimiento_dinero"  INT           REFERENCES "finanzas"."movimiento_inversion"("id_movimiento_dinero") ON DELETE CASCADE,
     "nombre"                VARCHAR(120),
     "monto"                 DECIMAL(18,2),
     "rentabilidad"          DECIMAL(8,4),
@@ -203,7 +201,7 @@ CREATE TRIGGER trg_meta_movimiento_mod
 -- finanzas.tipo_ingreso_meta
 CREATE TABLE IF NOT EXISTS "finanzas"."tipo_ingreso_meta" (
     "id_tipo_ingreso"         SERIAL PRIMARY KEY,
-    "id_movimiento_dinero"    INT REFERENCES "finanzas"."movimiento_meta"("id_movimiento_dinero") ON DELETE RESTRICT,
+    "id_movimiento_dinero"    INT REFERENCES "finanzas"."movimiento_meta"("id_movimiento_dinero") ON DELETE CASCADE,
     "nombre_movimiento_pago"  VARCHAR(120) NOT NULL,
     "descripcion"             VARCHAR(150),
     "activo"                  BOOLEAN      NOT NULL DEFAULT true,
@@ -218,11 +216,10 @@ CREATE TRIGGER trg_meta_tipo_ingreso_mod
 -- finanzas.meta
 CREATE TABLE IF NOT EXISTS "finanzas"."meta" (
     "id_meta"               SERIAL PRIMARY KEY,
-    "id_usuario"            INT           NOT NULL
-                                REFERENCES "auth"."usuario"("id_usuario") ON DELETE RESTRICT,
+    "id_usuario"            INT           NOT NULL,
     "id_editar_meta"        INT           NOT NULL
-                                REFERENCES "finanzas"."editar_meta"("id_editar_meta") ON DELETE RESTRICT,
-    "id_movimiento_dinero"  INT           REFERENCES "finanzas"."movimiento_meta"("id_movimiento_dinero") ON DELETE RESTRICT,
+                                REFERENCES "finanzas"."editar_meta"("id_editar_meta") ON DELETE CASCADE,
+    "id_movimiento_dinero"  INT           REFERENCES "finanzas"."movimiento_meta"("id_movimiento_dinero") ON DELETE CASCADE,
     "nombre"                VARCHAR(120),
     "descripcion"           TEXT,
     "monto_objetivo"        DECIMAL(18,2),

@@ -57,9 +57,9 @@ CREATE TRIGGER trg_contenido_mod
 CREATE TABLE "educacion"."leccion" (
     "id_leccion"          SERIAL PRIMARY KEY,
     "id_modulo"           INT          NOT NULL
-                              REFERENCES "educacion"."modulo_educativo"("id_modulo") ON DELETE RESTRICT,
+                              REFERENCES "educacion"."modulo_educativo"("id_modulo") ON DELETE CASCADE,
     "id_contenido"        INT
-                              REFERENCES "educacion"."contenido"("id_contenido") ON DELETE RESTRICT,
+                              REFERENCES "educacion"."contenido"("id_contenido") ON DELETE CASCADE,
     "titulo"              VARCHAR(200) NOT NULL,
     "descripcion"         TEXT,
     "duracion_minutos"    INT,
@@ -79,7 +79,7 @@ CREATE TABLE "educacion"."progreso_educativo" (
     "id_progreso"             SERIAL PRIMARY KEY,
     "id_usuario"              INT       NOT NULL,
     "id_modulo"               INT       NOT NULL
-                                  REFERENCES "educacion"."modulo_educativo"("id_modulo") ON DELETE RESTRICT,
+                                  REFERENCES "educacion"."modulo_educativo"("id_modulo") ON DELETE CASCADE,
     "porcentaje_completado"   INT       DEFAULT 0,
     "fecha_inicio"            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "fecha_completado"        TIMESTAMP,
@@ -99,7 +99,7 @@ CREATE TABLE "educacion"."progreso_leccion" (
     "id_progreso_leccion" SERIAL PRIMARY KEY,
     "id_usuario"          INT       NOT NULL,
     "id_leccion"          INT       NOT NULL
-                              REFERENCES "educacion"."leccion"("id_leccion") ON DELETE RESTRICT,
+                              REFERENCES "educacion"."leccion"("id_leccion") ON DELETE CASCADE,
     "completado"          BOOLEAN   DEFAULT false,
     "fecha_inicio"        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "fecha_completado"    TIMESTAMP,

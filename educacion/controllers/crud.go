@@ -49,6 +49,16 @@ func statusFromError(err error) int {
 	return http.StatusBadRequest
 }
 
+func pathID(c *beego.Controller) (int, bool) {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id <= 0 {
+		fail(c, http.StatusBadRequest, "El id debe ser un numero entero positivo", err)
+		return 0, false
+	}
+	return id, true
+}
+
 func handlePost[T any](c *beego.Controller, add func(*T) (int64, error)) {
 	var v T
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
@@ -132,16 +142,6 @@ func handlePut[T any](c *beego.Controller, v *T, update func(*T) error) {
 	ok(c, "Peticion exitosa", v)
 }
 
-func pathID(c *beego.Controller) (int, bool) {
-	idStr := c.Ctx.Input.Param(":id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil || id <= 0 {
-		fail(c, http.StatusBadRequest, "El id debe ser un numero entero positivo", err)
-		return 0, false
-	}
-	return id, true
-}
-
 func handleDelete(c *beego.Controller, del func(int) error) {
 	id, valid := pathID(c)
 	if !valid {
@@ -151,5 +151,5 @@ func handleDelete(c *beego.Controller, del func(int) error) {
 		fail(c, statusFromError(err), "No se pudo eliminar el registro", err)
 		return
 	}
-	ok(c, "Registro eliminado", nil)
+	ok(c, "Registro eliminado", id)
 }

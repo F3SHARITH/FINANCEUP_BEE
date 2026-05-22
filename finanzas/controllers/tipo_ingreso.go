@@ -31,7 +31,11 @@ func (c *TipoIngresoController) GetAll() {
 }
 
 func (c *TipoIngresoController) Put() {
-	handlePut(&c.Controller, &models.TipoIngreso{Id: pathID(&c.Controller)}, models.UpdateTipoIngresoById)
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
+	}
+	handlePut(&c.Controller, &models.TipoIngreso{Id: id}, models.UpdateTipoIngresoById)
 }
 
 func (c *TipoIngresoController) Delete() {

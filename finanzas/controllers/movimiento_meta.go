@@ -31,7 +31,11 @@ func (c *MovimientoMetaController) GetAll() {
 }
 
 func (c *MovimientoMetaController) Put() {
-	handlePut(&c.Controller, &models.MovimientoMeta{Id: pathID(&c.Controller)}, models.UpdateMovimientoMetaById)
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
+	}
+	handlePut(&c.Controller, &models.MovimientoMeta{Id: id}, models.UpdateMovimientoMetaById)
 }
 
 func (c *MovimientoMetaController) Delete() {

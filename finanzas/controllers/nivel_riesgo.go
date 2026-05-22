@@ -31,7 +31,11 @@ func (c *NivelRiesgoController) GetAll() {
 }
 
 func (c *NivelRiesgoController) Put() {
-	handlePut(&c.Controller, &models.NivelRiesgo{Id: pathID(&c.Controller)}, models.UpdateNivelRiesgoById)
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
+	}
+	handlePut(&c.Controller, &models.NivelRiesgo{Id: id}, models.UpdateNivelRiesgoById)
 }
 
 func (c *NivelRiesgoController) Delete() {

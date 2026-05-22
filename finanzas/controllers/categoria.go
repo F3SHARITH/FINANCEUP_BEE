@@ -31,7 +31,11 @@ func (c *CategoriaController) GetAll() {
 }
 
 func (c *CategoriaController) Put() {
-	handlePut(&c.Controller, &models.Categoria{Id: pathID(&c.Controller)}, models.UpdateCategoriaById)
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
+	}
+	handlePut(&c.Controller, &models.Categoria{Id: id}, models.UpdateCategoriaById)
 }
 
 func (c *CategoriaController) Delete() {

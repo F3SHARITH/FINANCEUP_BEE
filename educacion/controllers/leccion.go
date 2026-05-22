@@ -2,12 +2,7 @@ package controllers
 
 import (
 	"educacion/models"
-	"encoding/json"
-	"errors"
-	"strconv"
-	"strings"
 
-	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -33,18 +28,7 @@ func (c *LeccionController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *LeccionController) Post() {
-	var v models.Leccion
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddLeccion(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
-	}
-	c.ServeJSON()
+	handlePost(&c.Controller, models.AddLeccion)
 }
 
 // GetOne ...
@@ -55,20 +39,7 @@ func (c *LeccionController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *LeccionController) GetOne() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetLeccionById(id)
-	if err != nil {
-		logs.Error(err)
-		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-	} else {
-		if v == nil {
-			c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-		} else {
-			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
-		}
-	}
-	c.ServeJSON()
+	handleGetOne(&c.Controller, models.GetLeccionById)
 }
 
 // GetAll ...
@@ -84,59 +55,7 @@ func (c *LeccionController) GetOne() {
 // @Failure 403
 // @router / [get]
 func (c *LeccionController) GetAll() {
-	var fields []string
-	var sortby []string
-	var order []string
-	var query = make(map[string]string)
-	var limit int64 = 10
-	var offset int64
-
-	// fields: col1,col2,entity.col3
-	if v := c.GetString("fields"); v != "" {
-		fields = strings.Split(v, ",")
-	}
-	// limit: 10 (default is 10)
-	if v, err := c.GetInt64("limit"); err == nil {
-		limit = v
-	}
-	// offset: 0 (default is 0)
-	if v, err := c.GetInt64("offset"); err == nil {
-		offset = v
-	}
-	// sortby: col1,col2
-	if v := c.GetString("sortby"); v != "" {
-		sortby = strings.Split(v, ",")
-	}
-	// order: desc,asc
-	if v := c.GetString("order"); v != "" {
-		order = strings.Split(v, ",")
-	}
-	// query: k:v,k:v
-	if v := c.GetString("query"); v != "" {
-		for _, cond := range strings.Split(v, ",") {
-			kv := strings.SplitN(cond, ":", 2)
-			if len(kv) != 2 {
-				c.Data["json"] = errors.New("Error: invalid query key/value pair")
-				c.ServeJSON()
-				return
-			}
-			k, v := kv[0], kv[1]
-			query[k] = v
-		}
-	}
-
-	l, err := models.GetAllLeccion(query, fields, sortby, order, offset, limit)
-	if err != nil {
-		logs.Error(err)
-		c.Data["json"] = map[string]interface{}{"success": false, "status": 500, "Message": "Error en el servidor GetAll", "error": err.Error()}
-	} else {
-		if l == nil {
-			c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-		} else {
-			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
-		}
-	}
-	c.ServeJSON()
+	handleGetAll(&c.Controller, models.GetAllLeccion)
 }
 
 // Put ...
@@ -148,19 +67,11 @@ func (c *LeccionController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *LeccionController) Put() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Leccion{Id: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateLeccionById(&v); err == nil {
-			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
-		} else {
-			c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-		}
-	} else {
-		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
 	}
-	c.ServeJSON()
+	handlePut(&c.Controller, &models.Leccion{Id: id}, models.UpdateLeccionById)
 }
 
 // Delete ...
@@ -171,12 +82,5 @@ func (c *LeccionController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *LeccionController) Delete() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteLeccion(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Se elimino el id: " + idStr}
-	} else {
-		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Delete: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-	}
-	c.ServeJSON()
+	handleDelete(&c.Controller, models.DeleteLeccion)
 }

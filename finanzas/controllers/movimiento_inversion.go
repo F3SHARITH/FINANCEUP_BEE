@@ -31,7 +31,11 @@ func (c *MovimientoInversionController) GetAll() {
 }
 
 func (c *MovimientoInversionController) Put() {
-	handlePut(&c.Controller, &models.MovimientoInversion{Id: pathID(&c.Controller)}, models.UpdateMovimientoInversionById)
+	id, valid := pathID(&c.Controller)
+	if !valid {
+		return
+	}
+	handlePut(&c.Controller, &models.MovimientoInversion{Id: id}, models.UpdateMovimientoInversionById)
 }
 
 func (c *MovimientoInversionController) Delete() {
