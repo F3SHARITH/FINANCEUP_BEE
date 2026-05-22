@@ -127,7 +127,7 @@ func (c *CredencialController) GetAll() {
 		}else{
 			c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": l}
 		}
-		
+		c.ServeJSON() 
 	}
 
 // Put ...

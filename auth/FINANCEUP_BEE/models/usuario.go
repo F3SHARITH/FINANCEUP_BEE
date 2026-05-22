@@ -40,6 +40,9 @@ func init() {
 func AddUsuario(m *Usuario) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
+	if err == nil {
+        o.LoadRelated(m, "TipoDocumento")
+    }
 	return
 }
 

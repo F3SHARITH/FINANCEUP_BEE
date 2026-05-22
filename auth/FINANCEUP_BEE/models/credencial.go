@@ -39,6 +39,9 @@ func init() {
 func AddCredencial(m *Credencial) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
+	if err == nil {
+        o.LoadRelated(m, "IdUsuario")
+    }
 	return
 }
 
