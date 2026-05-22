@@ -33,10 +33,6 @@ func init() {
 func AddUsuarioRol(m *UsuarioRol) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
-	if err == nil {
-        o.LoadRelated(m, "IdUsuario")
-        o.LoadRelated(m, "IdRol")
-    }
 	return
 }
 

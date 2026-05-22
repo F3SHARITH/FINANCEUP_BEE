@@ -22,12 +22,12 @@ func main() {
 		panic(err)
 	}
 
-		pgUser, _ := beego.AppConfig.String("PG_USER")
-		pgPass, _ := beego.AppConfig.String("PG_PASS")
-		pgHost, _ := beego.AppConfig.String("PG_HOST")
-		pgPort, _ := beego.AppConfig.String("PG_PORT")
-		pgName, _ := beego.AppConfig.String("PG_NAME")
-		pgSchema := beego.AppConfig.DefaultString("PG_SCHEMA", "auth")
+		pgUser, _ := beego.AppConfig.String("PGuser")
+		pgPass, _ := beego.AppConfig.String("PGpass")
+		pgHost, _ := beego.AppConfig.String("PGhost")
+		pgPort, _ := beego.AppConfig.String("PGport")
+		pgName, _ := beego.AppConfig.String("PGdb")
+		pgSchema := beego.AppConfig.DefaultString("PGschema", "auth")
 
 		fmt.Printf("postgresSQL connection string: postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s\n", pgUser, pgPass, pgHost, pgPort, pgName, pgSchema)
 

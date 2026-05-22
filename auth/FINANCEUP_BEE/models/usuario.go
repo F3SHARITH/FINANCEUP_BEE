@@ -40,9 +40,6 @@ func init() {
 func AddUsuario(m *Usuario) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
-	if err == nil {
-        o.LoadRelated(m, "TipoDocumento")
-    }
 	return
 }
 
@@ -52,6 +49,7 @@ func GetUsuarioById(id int) (v *Usuario, err error) {
 	o := orm.NewOrm()
 	v = &Usuario{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "TipoDocumento")
 		return v, nil
 	}
 	return nil, err
@@ -62,7 +60,7 @@ func GetUsuarioById(id int) (v *Usuario, err error) {
 func GetAllUsuario(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Usuario))
+	qs := o.QueryTable(new(Usuario)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
