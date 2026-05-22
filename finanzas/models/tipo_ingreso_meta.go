@@ -11,7 +11,7 @@ import (
 )
 
 type TipoIngresoMeta struct {
-	Id                   int             `orm:"column(id_tipo_ingreso);pk"`
+	Id                   int             `orm:"column(id_tipo_ingreso);pk;auto"`
 	IdMovimientoDinero   *MovimientoMeta `orm:"column(id_movimiento_dinero);rel(fk);null"`
 	NombreMovimientoPago string          `orm:"column(nombre_movimiento_pago)"`
 	Descripcion          string          `orm:"column(descripcion);null"`
