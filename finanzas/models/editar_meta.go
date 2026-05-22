@@ -11,7 +11,7 @@ import (
 )
 
 type EditarMeta struct {
-	Id                int       `orm:"column(id_editar_meta);pk"`
+	Id                int       `orm:"column(id_editar_meta);pk;auto"`
 	Nombre            string    `orm:"column(nombre)"`
 	MontoActual       float64   `orm:"column(monto_actual);null"`
 	MontoObjetivo     float64   `orm:"column(monto_objetivo)"`

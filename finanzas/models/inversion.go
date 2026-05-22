@@ -11,7 +11,7 @@ import (
 )
 
 type Inversion struct {
-	Id                 int                  `orm:"column(id_inversion);pk"`
+	Id                 int                  `orm:"column(id_inversion);pk;auto"`
 	IdUsuario          int                  `orm:"column(id_usuario)"`
 	IdTipoInversion    *TipoInversion       `orm:"column(id_tipo_inversion);rel(fk)"`
 	IdNivelRiesgo      *NivelRiesgo         `orm:"column(id_nivel_riesgo);rel(fk)"`
