@@ -11,12 +11,12 @@ import (
 )
 
 type TipoDocumento struct {
-	Id                int       `orm:"column(id_tipo_documento);pk"`
+	Id                int       `orm:"column(id_tipo_documento);pk;auto"`
 	Nombre            string    `orm:"column(nombre)"`
 	Codigo            string    `orm:"column(codigo)"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *TipoDocumento) TableName() string {

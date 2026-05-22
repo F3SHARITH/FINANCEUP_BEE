@@ -11,14 +11,14 @@ import (
 )
 
 type AuditoriaLogin struct {
-	Id            int       `orm:"column(id_auditoria);pk"`
+	Id            int       `orm:"column(id_auditoria);p;auto"`
 	IdUsuario     *Usuario  `orm:"column(id_usuario);rel(fk)"`
 	TipoEvento    string    `orm:"column(tipo_evento)"`
 	IpAddress     string    `orm:"column(ip_address);null"`
 	Navegador     string    `orm:"column(navegador);null"`
 	FechaEvento   time.Time `orm:"column(fecha_evento);type(timestamp without time zone);null;auto_now_add"`
 	EstadoEvento  string    `orm:"column(estado_evento)"`
-	FechaCreacion time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
+	FechaCreacion time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *AuditoriaLogin) TableName() string {
@@ -43,6 +43,7 @@ func GetAuditoriaLoginById(id int) (v *AuditoriaLogin, err error) {
 	o := orm.NewOrm()
 	v = &AuditoriaLogin{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdUsuario")
 		return v, nil
 	}
 	return nil, err
@@ -53,7 +54,7 @@ func GetAuditoriaLoginById(id int) (v *AuditoriaLogin, err error) {
 func GetAllAuditoriaLogin(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(AuditoriaLogin))
+	qs := o.QueryTable(new(AuditoriaLogin)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

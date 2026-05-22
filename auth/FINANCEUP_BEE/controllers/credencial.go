@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"auth/FINANCEUP_BEE/models"
+	"FINANCEUP_BEE/models"
 	"encoding/json"
 	"errors"
 	"strconv"
 	"strings"
-
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -58,9 +58,11 @@ func (c *CredencialController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetCredencialById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+
+		c.Data["json"] = map[string]interface{}{"surccess":true, "status":400, "messages":"Error en el servicio GetOne: La solicitud contiene un parametro incorrecto o no existe ningun registro "}
 	} else {
-		c.Data["json"] = v
+		c.Data["json"] = map[string]interface{}{"surccess":true, "status":200,"menssage":"peticion exitosa", "data":v}
 	}
 	c.ServeJSON()
 }
@@ -121,12 +123,12 @@ func (c *CredencialController) GetAll() {
 
 	l, err := models.GetAllCredencial(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = l
+			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+		}else{
+			c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": l}
+		}
+		c.ServeJSON() 
 	}
-	c.ServeJSON()
-}
 
 // Put ...
 // @Title Put
@@ -141,17 +143,17 @@ func (c *CredencialController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Credencial{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		
 		if err := models.UpdateCredencialById(&v); err == nil {
-			c.Data["json"] = "OK"
-		} else {
-			c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "message": "Actualización exitosa"}
+	} else {
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message":"Error en el servicio PUT:"+ err.Error()}
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servicio PUT: " + err.Error()}
 	}
 	c.ServeJSON()
 }
-
 // Delete ...
 // @Title Delete
 // @Description delete the Credencial
@@ -163,7 +165,7 @@ func (c *CredencialController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteCredencial(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "dato eliminado", "data": id}
 	} else {
 		c.Data["json"] = err.Error()
 	}

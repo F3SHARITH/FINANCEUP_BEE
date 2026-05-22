@@ -11,7 +11,7 @@ import (
 )
 
 type Usuario struct {
-	Id                int            `orm:"column(id_usuario);pk"`
+	Id                int            `orm:"column(id_usuario);pk;auto"`
 	TipoDocumento     *TipoDocumento `orm:"column(tipo_documento);rel(fk)"`
 	Nombre            string         `orm:"column(nombre)"`
 	Apellido          string         `orm:"column(apellido)"`
@@ -24,7 +24,7 @@ type Usuario struct {
 	FechaUltimaSesion time.Time      `orm:"column(fecha_ultima_sesion);type(timestamp without time zone);null"`
 	Activo            bool           `orm:"column(activo)"`
 	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Usuario) TableName() string {
@@ -49,6 +49,7 @@ func GetUsuarioById(id int) (v *Usuario, err error) {
 	o := orm.NewOrm()
 	v = &Usuario{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "TipoDocumento")
 		return v, nil
 	}
 	return nil, err
@@ -59,7 +60,7 @@ func GetUsuarioById(id int) (v *Usuario, err error) {
 func GetAllUsuario(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Usuario))
+	qs := o.QueryTable(new(Usuario)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

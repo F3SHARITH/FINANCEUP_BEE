@@ -11,7 +11,7 @@ import (
 )
 
 type Credencial struct {
-	Id                 int       `orm:"column(id_credencial);pk"`
+	Id                 int       `orm:"column(id_credencial);pk;auto"`
 	IdUsuario          *Usuario  `orm:"column(id_usuario);rel(fk)"`
 	ContrasenaHash     string    `orm:"column(contrasena_hash)"`
 	Salt               string    `orm:"column(salt)"`
@@ -23,7 +23,7 @@ type Credencial struct {
 	RequiereCambio     bool      `orm:"column(requiere_cambio);null"`
 	Activo             bool      `orm:"column(activo)"`
 	FechaCreacion      time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion  time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion  time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *Credencial) TableName() string {
@@ -39,6 +39,9 @@ func init() {
 func AddCredencial(m *Credencial) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
+	if err == nil {
+        o.LoadRelated(m, "IdUsuario")
+    }
 	return
 }
 
@@ -48,6 +51,7 @@ func GetCredencialById(id int) (v *Credencial, err error) {
 	o := orm.NewOrm()
 	v = &Credencial{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdUsuario")
 		return v, nil
 	}
 	return nil, err
@@ -58,7 +62,7 @@ func GetCredencialById(id int) (v *Credencial, err error) {
 func GetAllCredencial(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Credencial))
+	qs := o.QueryTable(new(Credencial)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

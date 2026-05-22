@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"auth/FINANCEUP_BEE/models"
+	"FINANCEUP_BEE/models"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -58,9 +58,10 @@ func (c *TipoDocumentoController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetTipoDocumentoById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"surccess":true, "status":400, "messages":"Error en el servicio GetOne: La solicitud contiene un parametro incorrecto o no existe ningun registro "}
+	
 	} else {
-		c.Data["json"] = v
+		c.Data["json"] = map[string]interface{}{"surccess":true, "status":200,"menssage":"peticion exitosa", "data":v}
 	}
 	c.ServeJSON()
 }
@@ -121,9 +122,9 @@ func (c *TipoDocumentoController) GetAll() {
 
 	l, err := models.GetAllTipoDocumento(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
-		c.Data["json"] = l
+		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": l}
 	}
 	c.ServeJSON()
 }
@@ -142,12 +143,12 @@ func (c *TipoDocumentoController) Put() {
 	v := models.TipoDocumento{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateTipoDocumentoById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "message": "Actualización exitosa"}
 		} else {
-			c.Data["json"] = err.Error()
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message":"Error en el servicio PUT:"+ err.Error()}
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servicio PUT: " + err.Error()}
 	}
 	c.ServeJSON()
 }
@@ -163,7 +164,7 @@ func (c *TipoDocumentoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteTipoDocumento(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "dato eliminado", "data": id}
 	} else {
 		c.Data["json"] = err.Error()
 	}

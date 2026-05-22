@@ -11,13 +11,13 @@ import (
 )
 
 type UsuarioRol struct {
-	Id                int       `orm:"column(id_usuario_rol);pk"`
+	Id                int       `orm:"column(id_usuario_rol);pk;auto"`
 	IdUsuario         *Usuario  `orm:"column(id_usuario);rel(fk)"`
 	IdRol             *Rol      `orm:"column(id_rol);rel(fk)"`
 	FechaAsignacion   time.Time `orm:"column(fecha_asignacion);type(timestamp without time zone);null;auto_now_add"`
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone);auto_now_add"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now_add"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone);auto_now"`
 }
 
 func (t *UsuarioRol) TableName() string {
@@ -42,6 +42,8 @@ func GetUsuarioRolById(id int) (v *UsuarioRol, err error) {
 	o := orm.NewOrm()
 	v = &UsuarioRol{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdUsuario")
+		o.LoadRelated(v, "IdRol")
 		return v, nil
 	}
 	return nil, err
@@ -52,7 +54,7 @@ func GetUsuarioRolById(id int) (v *UsuarioRol, err error) {
 func GetAllUsuarioRol(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(UsuarioRol))
+	qs := o.QueryTable(new(UsuarioRol)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
