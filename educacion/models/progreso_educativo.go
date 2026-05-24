@@ -45,6 +45,7 @@ func GetProgresoEducativoById(id int) (v *ProgresoEducativo, err error) {
 	o := orm.NewOrm()
 	v = &ProgresoEducativo{Id: id}
 	if err = o.Read(v); err == nil {
+
 		return v, nil
 	}
 	return nil, err

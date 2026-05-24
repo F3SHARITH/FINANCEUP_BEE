@@ -44,6 +44,7 @@ func GetModuloEducativoById(id int) (v *ModuloEducativo, err error) {
 	o := orm.NewOrm()
 	v = &ModuloEducativo{Id: id}
 	if err = o.Read(v); err == nil {
+
 		return v, nil
 	}
 	return nil, err

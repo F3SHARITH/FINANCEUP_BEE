@@ -176,7 +176,7 @@ func (c *ContenidoController) Delete() {
 	if err := models.DeleteContenido(id); err == nil {
 		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Se elimino el id: " + idStr}
 	} else {
-		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Delete: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor Delete: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado", "error": err.Error()}
 	}
 	c.ServeJSON()
 }

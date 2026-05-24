@@ -47,7 +47,8 @@ func AddInversion(m *Inversion) (id int64, err error) {
 func GetInversionById(id int) (v *Inversion, err error) {
 	o := orm.NewOrm()
 	v = &Inversion{Id: id}
-	if err = o.Read(v); err == nil {
+	qs := o.QueryTable(new(Inversion)).Filter("Id", id).RelatedSel()
+	if err = qs.One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
@@ -58,7 +59,7 @@ func GetInversionById(id int) (v *Inversion, err error) {
 func GetAllInversion(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Inversion))
+	qs := o.QueryTable(new(Inversion)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
