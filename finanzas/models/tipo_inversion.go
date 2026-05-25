@@ -11,7 +11,7 @@ import (
 )
 
 type TipoInversion struct {
-	Id                int       `orm:"column(id_tipo_inversion);pk"`
+	Id                int       `orm:"column(id_tipo_inversion);pk;auto"`
 	Nombre            string    `orm:"column(nombre)"`
 	Descripcion       string    `orm:"column(descripcion);null"`
 	Activo            bool      `orm:"column(activo)"`

@@ -51,15 +51,17 @@ func statusFromError(err error) int {
 
 func handlePost[T any](c *beego.Controller, add func(*T) (int64, error)) {
 	var v T
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err != nil {
-		fail(c, http.StatusBadRequest, "El cuerpo de la solicitud no es valido", err)
-		return
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if _, err := add(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
+		} else {
+			c.Data["json"] = err.Error()
+		}
+	} else {
+		c.Data["json"] = err.Error()
 	}
-	if _, err := add(&v); err != nil {
-		fail(c, statusFromError(err), "No se pudo crear el registro", err)
-		return
-	}
-	created(c, v)
+	c.ServeJSON()
 }
 
 func handleGetOne[T any](c *beego.Controller, get func(int) (*T, error)) {
@@ -111,25 +113,24 @@ func handleGetAll(c *beego.Controller, getAll func(map[string]string, []string, 
 
 	l, err := getAll(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		fail(c, statusFromError(err), "No se pudieron consultar los registros", err)
-		return
+		c.Data["json"] = err.Error()
+	} else {
+		c.Data["json"] = l
 	}
-	if l == nil {
-		l = []interface{}{}
-	}
-	ok(c, "Peticion exitosa", l)
+	c.ServeJSON()
 }
 
 func handlePut[T any](c *beego.Controller, v *T, update func(*T) error) {
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, v); err != nil {
-		fail(c, http.StatusBadRequest, "El cuerpo de la solicitud no es valido", err)
-		return
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, v); err == nil {
+		if err := update(v); err == nil {
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
+	} else {
+		c.Data["json"] = err.Error()
 	}
-	if err := update(v); err != nil {
-		fail(c, statusFromError(err), "No se pudo actualizar el registro", err)
-		return
-	}
-	ok(c, "Peticion exitosa", v)
+	c.ServeJSON()
 }
 
 func pathID(c *beego.Controller) (int, bool) {
@@ -143,13 +144,12 @@ func pathID(c *beego.Controller) (int, bool) {
 }
 
 func handleDelete(c *beego.Controller, del func(int) error) {
-	id, valid := pathID(c)
-	if !valid {
-		return
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	if err := del(id); err == nil {
+		c.Data["json"] = "OK"
+	} else {
+		c.Data["json"] = err.Error()
 	}
-	if err := del(id); err != nil {
-		fail(c, statusFromError(err), "No se pudo eliminar el registro", err)
-		return
-	}
-	ok(c, "Registro eliminado", nil)
+	c.ServeJSON()
 }
