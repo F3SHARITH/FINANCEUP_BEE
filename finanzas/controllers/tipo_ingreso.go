@@ -1,6 +1,10 @@
 package controllers
 
 import (
+	"encoding/json"
+	"strconv"
+	"strings"
+
 	"finanzas/models"
 
 	beego "github.com/beego/beego/v2/server/web"
@@ -26,7 +30,18 @@ func (c *TipoIngresoController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *TipoIngresoController) Post() {
-	handlePost(&c.Controller, models.AddTipoIngreso)
+	var v models.TipoIngreso
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if _, err := models.AddTipoIngreso(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 201, "Message": "Peticion exitosa", "data": v}
+		} else {
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Post: no se pudo crear el recurso", "error": err.Error()}
+		}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error al parsear JSON", "error": err.Error()}
+	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -37,7 +52,15 @@ func (c *TipoIngresoController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *TipoIngresoController) GetOne() {
-	handleGetOne(&c.Controller, models.GetTipoIngresoById)
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	v, err := models.GetTipoIngresoById(id)
+	if err != nil {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetOne: recurso no encontrado", "error": err.Error()}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
+	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -53,7 +76,50 @@ func (c *TipoIngresoController) GetOne() {
 // @Failure 403
 // @router / [get]
 func (c *TipoIngresoController) GetAll() {
-	handleGetAll(&c.Controller, models.GetAllTipoIngreso)
+	var fields []string
+	var sortby []string
+	var order []string
+	query := make(map[string]string)
+	var limit int64 = 10
+	var offset int64
+
+	if v := c.GetString("fields"); v != "" {
+		fields = strings.Split(v, ",")
+	}
+	if v, err := c.GetInt64("limit"); err == nil {
+		limit = v
+	}
+	if v, err := c.GetInt64("offset"); err == nil {
+		offset = v
+	}
+	if v := c.GetString("sortby"); v != "" {
+		sortby = strings.Split(v, ",")
+	}
+	if v := c.GetString("order"); v != "" {
+		order = strings.Split(v, ",")
+	}
+	if v := c.GetString("query"); v != "" {
+		for _, cond := range strings.Split(v, ",") {
+			kv := strings.SplitN(cond, ":", 2)
+			if len(kv) != 2 {
+				c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error: invalid query key/value pair"}
+				c.ServeJSON()
+				return
+			}
+			query[kv[0]] = kv[1]
+		}
+	}
+
+	l, err := models.GetAllTipoIngreso(query, fields, sortby, order, offset, limit)
+	if err != nil {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetAll", "error": err.Error()}
+	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
+	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -65,7 +131,19 @@ func (c *TipoIngresoController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *TipoIngresoController) Put() {
-	handlePut(&c.Controller, &models.TipoIngreso{Id: pathID(&c.Controller)}, models.UpdateTipoIngresoById)
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	v := models.TipoIngreso{Id: id}
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if err := models.UpdateTipoIngresoById(&v); err == nil {
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
+		} else {
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Put: no se pudo actualizar el recurso", "error": err.Error()}
+		}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error al parsear JSON", "error": err.Error()}
+	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -76,5 +154,12 @@ func (c *TipoIngresoController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *TipoIngresoController) Delete() {
-	handleDelete(&c.Controller, models.DeleteTipoIngreso)
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	if err := models.DeleteTipoIngreso(id); err == nil {
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "dato eliminado", "data": id}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Delete", "error": err.Error()}
+	}
+	c.ServeJSON()
 }

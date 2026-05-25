@@ -1,10 +1,18 @@
 package models
 
 import (
+	"errors"
+	"fmt"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/beego/beego/v2/client/orm"
 )
+
+
+
+
 
 type MovimientoInversion struct {
 	Id                int       `orm:"column(id_movimiento_dinero);pk;auto"`
@@ -24,14 +32,19 @@ func init() {
 	orm.RegisterModel(new(MovimientoInversion))
 }
 
+
+
 func AddMovimientoInversion(m *MovimientoInversion) (id int64, err error) {
-	return addRecord(m)
+	o := orm.NewOrm()
+	id, err = o.Insert(m)
+	return
 }
 
 func GetMovimientoInversionById(id int) (v *MovimientoInversion, err error) {
 	o := orm.NewOrm()
 	v = &MovimientoInversion{Id: id}
-	if err = o.Read(v); err == nil {
+	qs := o.QueryTable(new(MovimientoInversion)).Filter("Id", id).RelatedSel()
+	if err = qs.One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
@@ -39,13 +52,92 @@ func GetMovimientoInversionById(id int) (v *MovimientoInversion, err error) {
 
 func GetAllMovimientoInversion(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
-	return getAllRecords(new(MovimientoInversion), query, fields, sortby, order, offset, limit)
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(MovimientoInversion)).RelatedSel()
+	for k, v := range query {
+		k = strings.Replace(k, ".", "__", -1)
+		if strings.Contains(k, "isnull") {
+			qs = qs.Filter(k, (v == "true" || v == "1"))
+		} else {
+			qs = qs.Filter(k, v)
+		}
+	}
+
+	var sortFields []string
+	if len(sortby) != 0 {
+		if len(sortby) == len(order) {
+			for i, v := range sortby {
+				orderby := ""
+				if order[i] == "desc" {
+					orderby = "-" + v
+				} else if order[i] == "asc" {
+					orderby = v
+				} else {
+					return nil, errors.New("Error: Invalid order. Must be either [asc|desc]")
+				}
+				sortFields = append(sortFields, orderby)
+			}
+		} else if len(order) == 1 {
+			for _, v := range sortby {
+				orderby := ""
+				if order[0] == "desc" {
+					orderby = "-" + v
+				} else if order[0] == "asc" {
+					orderby = v
+				} else {
+					return nil, errors.New("Error: Invalid order. Must be either [asc|desc]")
+				}
+				sortFields = append(sortFields, orderby)
+			}
+		} else {
+			return nil, errors.New("Error: 'sortby', 'order' sizes mismatch or 'order' size is not 1")
+		}
+	} else if len(order) != 0 {
+		return nil, errors.New("Error: unused 'order' fields")
+	}
+
+	var l []MovimientoInversion
+	qs = qs.OrderBy(sortFields...)
+	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+		if len(fields) == 0 {
+			for _, v := range l {
+				ml = append(ml, v)
+			}
+		} else {
+			for _, v := range l {
+				m := make(map[string]interface{})
+				val := reflect.ValueOf(v)
+				for _, fname := range fields {
+					m[fname] = val.FieldByName(fname).Interface()
+				}
+				ml = append(ml, m)
+			}
+		}
+		return ml, nil
+	}
+	return nil, err
 }
 
 func UpdateMovimientoInversionById(m *MovimientoInversion) (err error) {
-	return updateRecord(m, &MovimientoInversion{Id: m.Id})
+	o := orm.NewOrm()
+	v := MovimientoInversion{Id: m.Id}
+	if err = o.Read(&v); err == nil {
+		var num int64
+		if num, err = o.Update(m); err == nil {
+			fmt.Println("Number of records updated in database:", num)
+		}
+	}
+	return
 }
 
 func DeleteMovimientoInversion(id int) (err error) {
-	return deleteRecord(&MovimientoInversion{Id: id})
+	o := orm.NewOrm()
+	v := MovimientoInversion{Id: id}
+	if err = o.Read(&v); err == nil {
+		var num int64
+		if num, err = o.Delete(&MovimientoInversion{Id: id}); err == nil {
+			fmt.Println("Number of records deleted in database:", num)
+		}
+	}
+	return
 }

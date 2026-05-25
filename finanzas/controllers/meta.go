@@ -1,10 +1,15 @@
 package controllers
 
 import (
+	"encoding/json"
+	"strconv"
+	"strings"
+
 	"finanzas/models"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
+
 
 // MetaController operations for Meta
 type MetaController struct {
@@ -28,7 +33,18 @@ func (c *MetaController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *MetaController) Post() {
-	handlePost(&c.Controller, models.AddMeta)
+	var v models.Meta
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if _, err := models.AddMeta(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 201, "Message": "Peticion exitosa", "data": v}
+		} else {
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Post: no se pudo crear el recurso", "error": err.Error()}
+		}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error al parsear JSON", "error": err.Error()}
+	}
+	c.ServeJSON()
 }
 
 // GetOne ...
@@ -39,7 +55,15 @@ func (c *MetaController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *MetaController) GetOne() {
-	handleGetOne(&c.Controller, models.GetMetaById)
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	v, err := models.GetMetaById(id)
+	if err != nil {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetOne: recurso no encontrado", "error": err.Error()}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
+	}
+	c.ServeJSON()
 }
 
 // GetAll ...
@@ -55,7 +79,50 @@ func (c *MetaController) GetOne() {
 // @Failure 403
 // @router / [get]
 func (c *MetaController) GetAll() {
-	handleGetAll(&c.Controller, models.GetAllMeta)
+	var fields []string
+	var sortby []string
+	var order []string
+	query := make(map[string]string)
+	var limit int64 = 10
+	var offset int64
+
+	if v := c.GetString("fields"); v != "" {
+		fields = strings.Split(v, ",")
+	}
+	if v, err := c.GetInt64("limit"); err == nil {
+		limit = v
+	}
+	if v, err := c.GetInt64("offset"); err == nil {
+		offset = v
+	}
+	if v := c.GetString("sortby"); v != "" {
+		sortby = strings.Split(v, ",")
+	}
+	if v := c.GetString("order"); v != "" {
+		order = strings.Split(v, ",")
+	}
+	if v := c.GetString("query"); v != "" {
+		for _, cond := range strings.Split(v, ",") {
+			kv := strings.SplitN(cond, ":", 2)
+			if len(kv) != 2 {
+				c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error: invalid query key/value pair"}
+				c.ServeJSON()
+				return
+			}
+			query[kv[0]] = kv[1]
+		}
+	}
+
+	l, err := models.GetAllMeta(query, fields, sortby, order, offset, limit)
+	if err != nil {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetAll", "error": err.Error()}
+	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
+	}
+	c.ServeJSON()
 }
 
 // Put ...
@@ -67,7 +134,19 @@ func (c *MetaController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *MetaController) Put() {
-	handlePut(&c.Controller, &models.Meta{Id: pathID(&c.Controller)}, models.UpdateMetaById)
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	v := models.Meta{Id: id}
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if err := models.UpdateMetaById(&v); err == nil {
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
+		} else {
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Put: no se pudo actualizar el recurso", "error": err.Error()}
+		}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error al parsear JSON", "error": err.Error()}
+	}
+	c.ServeJSON()
 }
 
 // Delete ...
@@ -78,5 +157,12 @@ func (c *MetaController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *MetaController) Delete() {
-	handleDelete(&c.Controller, models.DeleteMeta)
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	if err := models.DeleteMeta(id); err == nil {
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "dato eliminado", "data": id}
+	} else {
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Delete", "error": err.Error()}
+	}
+	c.ServeJSON()
 }
