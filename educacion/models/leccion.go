@@ -58,7 +58,7 @@ func GetAllLeccion(query map[string]string, fields []string, sortby []string, or
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Leccion)).RelatedSel()
-	// query k=v
+	// query k=v.RelatedSel()
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
