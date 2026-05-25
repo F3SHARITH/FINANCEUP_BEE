@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "FINANCEUP_BEE/routers"
+	_ "negocio/routers"
 	"fmt"
 	"github.com/beego/beego/v2/server/web/filter/cors"
 

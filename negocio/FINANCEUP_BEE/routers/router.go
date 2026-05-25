@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"FINANCEUP_BEE/controllers"
+	"negocio/controllers"
 
 	beego "github.com/beego/beego/v2/server/web"
 )

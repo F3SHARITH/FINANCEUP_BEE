@@ -1,4 +1,4 @@
-module FINANCEUP_BEE
+module negocio
 
 go 1.26.2
 

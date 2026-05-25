@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"FINANCEUP_BEE/models"
+	"negocio/models"
 	"encoding/json"
-	"errors"
 	"strconv"
 	"strings"
 
@@ -112,7 +111,7 @@ func (c *AsesorBancarioController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.Data["json"] = errors.New("Error: invalid query key/value pair")
+				c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetAll: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 				c.ServeJSON()
 				return
 			}
@@ -123,7 +122,7 @@ func (c *AsesorBancarioController) GetAll() {
 
 	l, err := models.GetAllAsesorBancario(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 400, "Message": "Error en el servidor GetAll: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
 		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
 	}
