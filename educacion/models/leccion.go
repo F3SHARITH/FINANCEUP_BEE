@@ -45,7 +45,8 @@ func AddLeccion(m *Leccion) (id int64, err error) {
 func GetLeccionById(id int) (v *Leccion, err error) {
 	o := orm.NewOrm()
 	v = &Leccion{Id: id}
-	if err = o.Read(v); err == nil {
+	qs := o.QueryTable(new(Leccion)).Filter("Id", id).RelatedSel()
+	if err = qs.One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
@@ -56,7 +57,7 @@ func GetLeccionById(id int) (v *Leccion, err error) {
 func GetAllLeccion(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Leccion))
+	qs := o.QueryTable(new(Leccion)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
