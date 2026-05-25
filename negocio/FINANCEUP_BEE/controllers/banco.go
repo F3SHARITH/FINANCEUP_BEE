@@ -36,12 +36,12 @@ func (c *BancoController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddBanco(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
 		} else {
-			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Post: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 		}
 	} else {
-		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": v}
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Post: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	}
 	c.ServeJSON()
 }
@@ -58,9 +58,9 @@ func (c *BancoController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetBancoById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
-		c.Data["json"] = v
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
 	}
 	c.ServeJSON()
 }
@@ -121,13 +121,9 @@ func (c *BancoController) GetAll() {
 
 	l, err := models.GetAllBanco(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetAll: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	} else {
-		if l==nil{
-			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-		}else{
-			c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": l}
-		}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
 	}
 	c.ServeJSON()
 }
@@ -146,12 +142,12 @@ func (c *BancoController) Put() {
 	v := models.Banco{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateBancoById(&v); err == nil {
-			c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data": v}
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": v}
 		} else {
-			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 		}
 	} else {
-		c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Put: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	}
 	c.ServeJSON()
 }
@@ -167,9 +163,9 @@ func (c *BancoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteBanco(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "dato eliminado", "data": id}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": "OK"}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor Delete: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
 	}
 	c.ServeJSON()
 }

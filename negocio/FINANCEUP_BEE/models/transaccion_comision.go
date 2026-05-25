@@ -46,10 +46,12 @@ func GetTransaccionComisionById(id int) (v *TransaccionComision, err error) {
 	o := orm.NewOrm()
 	v = &TransaccionComision{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdCredito")
+		o.LoadRelated(v, "IdBanco")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
 
 // GetAllTransaccionComision retrieves all TransaccionComision matches certain condition. Returns empty list if
 // no records exist

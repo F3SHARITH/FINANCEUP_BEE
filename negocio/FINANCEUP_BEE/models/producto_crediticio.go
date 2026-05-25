@@ -49,10 +49,11 @@ func GetProductoCrediticioById(id int) (v *ProductoCrediticio, err error) {
 	o := orm.NewOrm()
 	v = &ProductoCrediticio{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdBanco")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
 
 // GetAllProductoCrediticio retrieves all ProductoCrediticio matches certain condition. Returns empty list if
 // no records exist
