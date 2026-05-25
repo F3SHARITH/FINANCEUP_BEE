@@ -45,10 +45,11 @@ func GetAsesorBancarioById(id int) (v *AsesorBancario, err error) {
 	o := orm.NewOrm()
 	v = &AsesorBancario{Id: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(v, "IdBanco")
 		return v, nil
 	}
-	return nil, err
-}
+		return v, nil
+	}
 
 // GetAllAsesorBancario retrieves all AsesorBancario matches certain condition. Returns empty list if
 // no records exist
