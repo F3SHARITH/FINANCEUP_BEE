@@ -47,7 +47,8 @@ func AddMeta(m *Meta) (id int64, err error) {
 func GetMetaById(id int) (v *Meta, err error) {
 	o := orm.NewOrm()
 	v = &Meta{Id: id}
-	if err = o.Read(v); err == nil {
+	qs := o.QueryTable(new(Meta)).Filter("Id", id).RelatedSel()
+	if err = qs.One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
@@ -58,7 +59,7 @@ func GetMetaById(id int) (v *Meta, err error) {
 func GetAllMeta(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Meta))
+	qs := o.QueryTable(new(Meta)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

@@ -3,6 +3,7 @@ package main
 import (
 	_ "finanzas/routers"
 	"fmt"
+
 	"github.com/beego/beego/v2/client/orm"
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/server/web/filter/cors"
@@ -45,9 +46,9 @@ func main() {
 			pgSchema,
 	)
 
+	beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	if beego.BConfig.RunMode == "dev" {
 		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins: []string{"*"},
