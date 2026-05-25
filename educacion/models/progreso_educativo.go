@@ -44,7 +44,8 @@ func AddProgresoEducativo(m *ProgresoEducativo) (id int64, err error) {
 func GetProgresoEducativoById(id int) (v *ProgresoEducativo, err error) {
 	o := orm.NewOrm()
 	v = &ProgresoEducativo{Id: id}
-	if err = o.Read(v); err == nil {
+	qs := o.QueryTable(new(ProgresoEducativo)).Filter("Id", id).RelatedSel()
+	if err = qs.One(v); err == nil {
 
 		return v, nil
 	}
@@ -56,7 +57,7 @@ func GetProgresoEducativoById(id int) (v *ProgresoEducativo, err error) {
 func GetAllProgresoEducativo(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(ProgresoEducativo))
+	qs := o.QueryTable(new(ProgresoEducativo)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

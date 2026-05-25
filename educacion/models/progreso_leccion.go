@@ -43,7 +43,8 @@ func AddProgresoLeccion(m *ProgresoLeccion) (id int64, err error) {
 func GetProgresoLeccionById(id int) (v *ProgresoLeccion, err error) {
 	o := orm.NewOrm()
 	v = &ProgresoLeccion{Id: id}
-	if err = o.Read(v); err == nil {
+	qs := o.QueryTable(new(ProgresoLeccion)).Filter("Id", id).RelatedSel()
+	if err = qs.One(v); err == nil {
 		return v, nil
 	}
 	return nil, err
@@ -54,7 +55,7 @@ func GetProgresoLeccionById(id int) (v *ProgresoLeccion, err error) {
 func GetAllProgresoLeccion(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(ProgresoLeccion))
+	qs := o.QueryTable(new(ProgresoLeccion)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
