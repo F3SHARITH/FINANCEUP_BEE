@@ -3,7 +3,7 @@ package controllers
 import (
 	"FINANCEUP_BEE/models"
 	"encoding/json"
-	"errors"
+
 	"strconv"
 	"strings"
 	
@@ -37,7 +37,7 @@ func (c *AuditoriaLoginController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddAuditoriaLogin(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] =map[string]interface{}{"success": true, "status": 201, "message": "Petición exitosa", "data": v}
+			c.Data["json"] = map[string]interface{}{"success": true, "status": 201, "message": "Petición exitosa", "data": v}
 		} else {
 			c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "message": "Error al crear el registro: " + err.Error()}
 		}
@@ -114,7 +114,7 @@ func (c *AuditoriaLoginController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.Data["json"] = errors.New("Error: invalid query key/value pair")
+				c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error: invalid query key/value pair"}
 				c.ServeJSON()
 				return
 			}
@@ -126,14 +126,9 @@ func (c *AuditoriaLoginController) GetAll() {
 	l, err := models.GetAllAuditoriaLogin(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		logs.Error(err)
-
-	
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "Message": "Error en el servidor GetAll: " + err.Error()}
 	} else {
-		if l == nil {
-			c.Data["json"] = map[string]interface{}{"success": true, "status":400, "Message": "Error en el servidor GetOne: La solicitud contiene un parametro incorrecto o no existe el recurso solicitado"}
-		}else{
-			c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "Peticion exitosa", "data":l}
-		}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "Message": "Peticion exitosa", "data": l}
 	}
 	c.ServeJSON()
 }
@@ -174,9 +169,9 @@ func (c *AuditoriaLoginController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteAuditoriaLogin(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"success": true, "status":200, "Message": "dato eliminado", "data": id}
+		c.Data["json"] = map[string]interface{}{"success": true, "status": 200, "message": "Eliminación exitosa", "data": id}
 	} else {
-		c.Data["json"] = err.Error()
+		c.Data["json"] = map[string]interface{}{"success": false, "status": 400, "message": "Error al eliminar: " + err.Error()}
 	}
 	c.ServeJSON()
 }
